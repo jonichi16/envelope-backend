@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: envelope
+  profiles:
+    active: "${ENV}"
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+server:
+  error:
+    include-message: always

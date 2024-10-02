@@ -1,5 +1,7 @@
 package com.jonichi.envelope.auth.v1;
 
+import com.jonichi.envelope.common.Resource;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,17 +17,33 @@ public class AuthenticationController {
     private final AuthenticationService service;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody RegisterRequest request
+    public ResponseEntity<Resource<AuthenticationResult>> register(
+            @RequestBody @Valid RegisterRequest request
     ) {
-        return ResponseEntity.ok(service.register(request));
+
+        final AuthenticationResult result = service.register(request);
+        final Resource<AuthenticationResult> resource = Resource.Success
+                .<AuthenticationResult>builder()
+                .message("Success")
+                .data(result)
+                .build();
+
+        return ResponseEntity.ok(resource);
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticationRequest request
+    public ResponseEntity<Resource<AuthenticationResult>> authenticate(
+            @RequestBody @Valid AuthenticationRequest request
     ) {
-        return ResponseEntity.ok(service.authenticate(request));
+
+        final AuthenticationResult result = service.authenticate(request);
+        final Resource<AuthenticationResult> resource = Resource.Success
+                .<AuthenticationResult>builder()
+                .message("Success")
+                .data(result)
+                .build();
+
+        return ResponseEntity.ok(resource);
     }
 
 }

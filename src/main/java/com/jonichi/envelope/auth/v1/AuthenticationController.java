@@ -1,8 +1,9 @@
 package com.jonichi.envelope.auth.v1;
 
-import com.jonichi.envelope.common.Resource;
+import com.jonichi.envelope.common.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,33 +18,36 @@ public class AuthenticationController {
     private final AuthenticationService service;
 
     @PostMapping("/register")
-    public ResponseEntity<Resource<AuthenticationResult>> register(
+    public ResponseEntity<ApiResponse<AuthenticationResult>> register(
             @RequestBody @Valid RegisterRequest request
     ) {
 
+        final String successMessage = "User registered successfully.";
+        final HttpStatus status = HttpStatus.CREATED;
         final AuthenticationResult result = service.register(request);
-        final Resource<AuthenticationResult> resource = Resource.Success
-                .<AuthenticationResult>builder()
-                .message("Success")
+        final ApiResponse<AuthenticationResult> response = ApiResponse.Success.<AuthenticationResult>builder()
+                .message(successMessage)
+                .code(status.value())
                 .data(result)
                 .build();
 
-        return ResponseEntity.ok(resource);
+        return ResponseEntity.status(status).body(response);
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<Resource<AuthenticationResult>> authenticate(
+    public ResponseEntity<ApiResponse<AuthenticationResult>> authenticate(
             @RequestBody @Valid AuthenticationRequest request
     ) {
 
+        final String successMessage = "User authenticated successfully.";
         final AuthenticationResult result = service.authenticate(request);
-        final Resource<AuthenticationResult> resource = Resource.Success
-                .<AuthenticationResult>builder()
-                .message("Success")
+        final ApiResponse<AuthenticationResult> response = ApiResponse.Success.<AuthenticationResult>builder()
+                .message(successMessage)
+                .code(HttpStatus.OK.value())
                 .data(result)
                 .build();
 
-        return ResponseEntity.ok(resource);
+        return ResponseEntity.ok(response);
     }
 
 }

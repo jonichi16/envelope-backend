@@ -1,4 +1,4 @@
-package com.jonichi.envelope.auth.v1;
+package com.jonichi.envelope.auth;
 
 import com.jonichi.envelope.config.JwtService;
 import com.jonichi.envelope.user.Role;
@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AuthenticationService {
 
     private final UserRepository repository;
@@ -20,13 +21,12 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    @Transactional
     public AuthenticationResult register(RegisterRequest request) {
 
         var user = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
+                .name(request.name())
+                .email(request.email())
+                .password(passwordEncoder.encode(request.password()))
                 .role(Role.USER)
                 .build();
 
@@ -43,12 +43,12 @@ public class AuthenticationService {
     public AuthenticationResult authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
+                        request.email(),
+                        request.password()
                 )
         );
 
-        var user = repository.findUserByEmail(request.getEmail())
+        var user = repository.findUserByEmail(request.email())
                 .orElseThrow();
 
         var jwtToken = jwtService.generateToken(user);

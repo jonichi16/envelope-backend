@@ -1,6 +1,6 @@
-package com.jonichi.envelope.auth.v1;
+package com.jonichi.envelope.auth;
 
-import com.jonichi.envelope.common.ApiResponse;
+import com.jonichi.envelope.common.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

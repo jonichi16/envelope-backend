@@ -2,8 +2,8 @@ package com.jonichi.envelope.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,26 +23,34 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user")
+@Table(name = "_user", uniqueConstraints = {
+        @UniqueConstraint(
+                name = "user_name_unique",
+                columnNames = "name"
+        ),
+        @UniqueConstraint(
+                name = "user_email_unique",
+                columnNames = "email"
+        )
+})
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "_user_sequence")
+    @SequenceGenerator(name = "_user_sequence", sequenceName = "_user_sequence", allocationSize = 1)
     private Integer id;
 
-    @NotNull(message = "Name is required. Please enter a valid value.")
-    @NotBlank(message = "Name is required. Please enter a valid value.")
-    @Column(nullable = false, unique = true)
+    @NotEmpty(message = "Name is required. Please enter a valid value.")
+    @Column(nullable = false)
     private String name;
 
-    @NotNull(message = "Email is required. Please enter a valid value.")
-    @NotBlank(message = "Email is required. Please enter a valid value.")
-    @Column(nullable = false, unique = true)
+    @NotEmpty(message = "Email is required. Please enter a valid value.")
+    @Email(message = "Invalid email.")
+    @Column(nullable = false)
     private String email;
 
     @JsonIgnore
-    @NotNull(message = "Password is required. Please enter a valid value.")
-    @NotBlank(message = "Password is required. Please enter a valid value.")
+    @NotEmpty(message = "Password is required. Please enter a valid value.")
     @Column(nullable = false)
     private String password;
 

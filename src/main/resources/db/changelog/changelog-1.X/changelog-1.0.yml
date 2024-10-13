@@ -1,0 +1,85 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1.0.0
+      author: jonichi
+      changes:
+        - createSequence:
+            sequenceName: _user_sequence
+            startValue: 1
+            incrementBy: 1
+        - createTable:
+            tableName: _user
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: user_name_unique
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: user_email_unique
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_date
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 1.0.0-tag
+      author: jonichi
+      changes:
+        - tagDatabase:
+            tag: 1.0.0
+
+  - changeSet:
+      id: test-data-1.0.0
+      author: jonichi
+      context: dev
+      changes:
+        - insert:
+            tableName: _user
+            columns:
+              - column:
+                  name: name
+                  value: Edogawa Conan
+              - column:
+                  name: email
+                  value: conan@example.com
+              - column:
+                  name: password
+                  value: $2a$12$XishgQS/FVJNLSB84olOmOBDryrn7EKhlxwRMbA6Ftp0.hEei3Ao.
+              - column:
+                  name: role
+                  value: USER
+        - sql:
+            comment: "Resynchronize _user_sequence"
+            sql: "SELECT setval('_user_sequence', (SELECT MAX(id) FROM _user));"

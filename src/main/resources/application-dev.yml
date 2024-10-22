@@ -5,3 +5,8 @@ spring:
     enabled: true
     drop-first: true
     default-schema: public
+
+logging:
+  level:
+    com:
+      jonichi: DEBUG

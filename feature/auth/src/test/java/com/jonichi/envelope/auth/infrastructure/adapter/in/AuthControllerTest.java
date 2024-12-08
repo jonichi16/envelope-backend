@@ -32,8 +32,7 @@ public class AuthControllerTest {
         RegisterRequestDTO registerRequestDTO = new RegisterRequestDTO(username, email, password);
 
         // when
-        when(authUseCase.register(username, email, password)).thenReturn("encodedToken");
-        ResponseEntity<String> response = authController.register(registerRequestDTO);
+        authController.register(registerRequestDTO);
 
         // then
         verify(authUseCase, times(1)).register(
@@ -41,6 +40,22 @@ public class AuthControllerTest {
                 registerRequestDTO.email(),
                 registerRequestDTO.password()
         );
+    }
+
+    @Test
+    public void register_shouldReturnCorrectResponseBody() throws Exception {
+        // given
+        String username = "test";
+        String email = "test@mail.com";
+        String password = "secret";
+
+        RegisterRequestDTO registerRequestDTO = new RegisterRequestDTO(username, email, password);
+
+        // when
+        when(authUseCase.register(username, email, password)).thenReturn("encodedToken");
+        ResponseEntity<String> response = authController.register(registerRequestDTO);
+
+        // then
         assertThat(response.getBody()).isEqualTo("encodedToken");
     }
 

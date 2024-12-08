@@ -14,7 +14,6 @@ public class AuthController {
 
     private final AuthUseCase authUseCase;
 
-    @Autowired
     public AuthController(AuthUseCase authUseCase) {
         this.authUseCase = authUseCase;
     }

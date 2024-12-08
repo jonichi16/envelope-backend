@@ -1,0 +1,30 @@
+package com.jonichi.envelope.auth.infrastructure.adapter.in;
+
+import com.jonichi.envelope.auth.application.port.in.AuthUseCase;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/v1/auth")
+public class AuthController {
+
+    private final AuthUseCase authUseCase;
+
+    @Autowired
+    public AuthController(AuthUseCase authUseCase) {
+        this.authUseCase = authUseCase;
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<String> register() {
+
+        String token = authUseCase.register();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(token);
+    }
+
+}

@@ -1,6 +1,7 @@
 package com.jonichi.envelope.auth.infrastructure.adapter.in;
 
 import com.jonichi.envelope.auth.application.port.in.AuthUseCase;
+import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.RegisterRequestDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,14 +25,22 @@ public class AuthControllerTest {
     @Test
     public void register_shouldCallAuthUseCaseOnce() throws Exception {
         // given
+        String username = "test";
+        String email = "test@mail.com";
+        String password = "secret";
+
+        RegisterRequestDTO registerRequestDTO = new RegisterRequestDTO(username, email, password);
 
         // when
-        when(authUseCase.register()).thenReturn("encodedToken");
-        ResponseEntity<String> response = authController.register();
+        when(authUseCase.register(username, email, password)).thenReturn("encodedToken");
+        ResponseEntity<String> response = authController.register(registerRequestDTO);
 
         // then
-        verify(authUseCase, times(1)).register();
-        assertThat(response.getStatusCode().value()).isEqualTo(201);
+        verify(authUseCase, times(1)).register(
+                registerRequestDTO.username(),
+                registerRequestDTO.email(),
+                registerRequestDTO.password()
+        );
         assertThat(response.getBody()).isEqualTo("encodedToken");
     }
 

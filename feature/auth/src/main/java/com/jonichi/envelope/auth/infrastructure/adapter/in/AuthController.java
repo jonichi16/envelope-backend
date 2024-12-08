@@ -1,10 +1,12 @@
 package com.jonichi.envelope.auth.infrastructure.adapter.in;
 
 import com.jonichi.envelope.auth.application.port.in.AuthUseCase;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.RegisterRequestDTO;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,9 +21,15 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register() {
+    public ResponseEntity<String> register(
+            @RequestBody @Valid RegisterRequestDTO registerRequestDTO
+    ) {
 
-        String token = authUseCase.register();
+        String token = authUseCase.register(
+                registerRequestDTO.username(),
+                registerRequestDTO.email(),
+                registerRequestDTO.password()
+        );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(token);
     }

@@ -22,8 +22,9 @@
 		<developer/>
 	</developers>
     <modules>
-        <module>feature/core</module>
-    </modules>
+		<module>feature/auth</module>
+		<module>feature/core</module>
+	</modules>
     <scm>
 		<connection/>
 		<developerConnection/>

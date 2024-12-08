@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Exit immediately if a command exits with a non-zero status
+set -e
+
+echo "Starting code quality checks..."
+
+echo "Cleaning..."
+mvn clean
+
+echo "Running Checkstyle..."
+mvn checkstyle:check -ntp
+
+echo "Running PMD..."
+mvn pmd:check -ntp
+
+echo "Running SpotBugs..."
+mvn spotbugs:check -ntp
+
+echo "Cleaning..."
+mvn clean
+
+echo "Code quality checks completed successfully."

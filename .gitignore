@@ -34,3 +34,4 @@ build/
 
 ### code ###
 .env
+config/liquibase/liquibase.properties

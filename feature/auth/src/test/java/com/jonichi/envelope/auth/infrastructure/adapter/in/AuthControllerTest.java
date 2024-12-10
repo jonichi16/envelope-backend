@@ -1,12 +1,15 @@
 package com.jonichi.envelope.auth.infrastructure.adapter.in;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jonichi.envelope.auth.application.port.in.AuthUseCase;
 import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.RegisterRequestDTO;
+import com.jonichi.envelope.common.dto.SuccessResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -21,6 +24,7 @@ public class AuthControllerTest {
     private AuthUseCase authUseCase;
     @InjectMocks
     private AuthController authController;
+
 
     @Test
     public void register_shouldCallAuthUseCaseOnce() throws Exception {
@@ -53,10 +57,30 @@ public class AuthControllerTest {
 
         // when
         when(authUseCase.register(username, email, password)).thenReturn("encodedToken");
-        ResponseEntity<String> response = authController.register(registerRequestDTO);
+        ResponseEntity<?> response = authController.register(registerRequestDTO);
 
-        // then
-        assertThat(response.getBody()).isEqualTo("encodedToken");
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody()).isInstanceOf(SuccessResponse.class);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String responseBodyJson = objectMapper.writeValueAsString(response.getBody());
+        SuccessResponse<String> actualResponse = objectMapper
+                .readValue(
+                        responseBodyJson,
+                        objectMapper
+                                .getTypeFactory()
+                                .constructParametricType(
+                                        SuccessResponse.class,
+                                        String.class
+                                )
+                );
+
+        System.out.println(actualResponse);
+
+        // Validate fields
+        assertThat(actualResponse.getCode()).isEqualTo(201);
+        assertThat(actualResponse.getMessage()).isEqualTo("User registered successfully");
+        assertThat(actualResponse.getData()).isEqualTo("encodedToken");
     }
 
 }

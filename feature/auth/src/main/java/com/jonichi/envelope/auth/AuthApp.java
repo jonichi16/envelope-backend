@@ -2,6 +2,8 @@ package com.jonichi.envelope.auth;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * Entry point for the Authentication Service application.
@@ -12,6 +14,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  */
 @SpringBootApplication
+//@ComponentScan(basePackages = {"com.jonichi.envelope"})
+//@EnableJpaRepositories(basePackages = {"com.jonichi.envelope"}) tempo disable
+//@EntityScan(basePackages = {"com.jonichi.envelope"})
 public class AuthApp {
 
     /**

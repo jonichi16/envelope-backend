@@ -8,7 +8,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class SuccessResponseTest {
 
     @Test
-    public void builderShouldCreateTheCorrectObject() throws Exception {
+    public void builder_shouldCreateTheCorrectObject() throws Exception {
         // given
         int code = 200;
         String message = "Success";
@@ -30,7 +30,7 @@ public class SuccessResponseTest {
     }
 
     @Test
-    public void builderShouldHaveNullErrorAndErrorCode() throws Exception {
+    public void builder_shouldHaveNullErrorAndErrorCode() throws Exception {
         // given
         int code = 200;
         String message = "Success";
@@ -49,7 +49,7 @@ public class SuccessResponseTest {
     }
 
     @Test
-    public void builderShouldNotHaveErrorAndErrorCodeFields() throws Exception {
+    public void builder_shouldNotHaveErrorAndErrorCodeFields() throws Exception {
         // given
         int code = 200;
         String message = "Success";

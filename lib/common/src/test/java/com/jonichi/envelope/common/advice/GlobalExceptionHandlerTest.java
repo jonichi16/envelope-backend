@@ -2,15 +2,16 @@ package com.jonichi.envelope.common.advice;
 
 import com.jonichi.envelope.common.constant.ErrorCode;
 import com.jonichi.envelope.common.dto.ApiResponse;
-import com.jonichi.envelope.common.dto.ErrorResponse;
 import com.jonichi.envelope.common.exception.EnvelopeDuplicateException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,23 @@ public class GlobalExceptionHandlerTest {
         assertThat(response.getBody().isSuccess()).isFalse();
         assertThat(response.getBody().getMessage()).isEqualTo("Object already exists");
         assertThat(response.getBody().getErrorCode()).isEqualTo(ErrorCode.DUPLICATE);
+        assertThat(response.getBody().getTimestamp()).isNotNull();
+    }
+
+    @Test
+    public void handleNoResourceFoundException_shouldReturn404NotFoundError() throws Exception {
+        // given
+        NoResourceFoundException exception = new NoResourceFoundException(HttpMethod.POST, "/sample/path");
+
+        // when
+        ResponseEntity<ApiResponse<Void>> response = globalExceptionHandler.handleNoResourceFoundException(exception);
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(Objects.requireNonNull(response.getBody()).getCode()).isEqualTo(404);
+        assertThat(response.getBody().isSuccess()).isFalse();
+        assertThat(response.getBody().getMessage()).isEqualTo(exception.getMessage());
+        assertThat(response.getBody().getErrorCode()).isEqualTo(ErrorCode.NOT_FOUND);
         assertThat(response.getBody().getTimestamp()).isNotNull();
     }
 

@@ -4,15 +4,17 @@ import com.jonichi.envelope.common.constant.ErrorCode;
 import com.jonichi.envelope.common.dto.ApiResponse;
 import com.jonichi.envelope.common.dto.ErrorResponse;
 import com.jonichi.envelope.common.exception.EnvelopeDuplicateException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Global exception handler for the Envelope application.
@@ -81,6 +83,29 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(status).body(response);
 
+    }
+    /**
+     * Handles {@link NoResourceFoundException} and maps it to a 404 Not Found response.
+     *
+     * <p>This method constructs an error response using {@link ErrorResponse} with a specific
+     * error code ({@link ErrorCode#NOT_FOUND}). It ensures that clients receive a structured
+     * error response with meaningful details when a resource cannot be found.</p>
+     *
+     * @param e the {@link NoResourceFoundException} thrown when a requested resource is not found
+     * @return a {@link ResponseEntity} containing a structured error response
+     */
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleNoResourceFoundException(NoResourceFoundException e) {
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+
+        ApiResponse<Void> response = ErrorResponse.<Void>builder()
+                .code(status.value())
+                .message(e.getMessage())
+                .errorCode(ErrorCode.NOT_FOUND)
+                .build();
+
+        return ResponseEntity.status(status).body(response);
     }
 
     /**

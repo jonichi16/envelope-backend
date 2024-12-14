@@ -1,9 +1,9 @@
 package com.jonichi.envelope.common.dto;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 public class SuccessResponseTest {
 
@@ -30,7 +30,7 @@ public class SuccessResponseTest {
     }
 
     @Test
-    public void builderShouldThrowExceptionForUnsupportedMethods() throws Exception {
+    public void builderShouldHaveNullErrorAndErrorCode() throws Exception {
         // given
         int code = 200;
         String message = "Success";
@@ -44,12 +44,31 @@ public class SuccessResponseTest {
                 .build();
 
         // then
-        assertThatThrownBy(response::getError)
-                .isInstanceOf(UnsupportedOperationException.class)
-                .hasMessage("Error field is not supported");
-        assertThatThrownBy(response::getErrorCode)
-                .isInstanceOf(UnsupportedOperationException.class)
-                .hasMessage("ErrorCode field is not supported");
+        assertThat(response.getError()).isNull();
+        assertThat(response.getErrorCode()).isNull();
+    }
+
+    @Test
+    public void builderShouldNotHaveErrorAndErrorCodeFields() throws Exception {
+        // given
+        int code = 200;
+        String message = "Success";
+        String data = "Sample data";
+
+        // when
+        ApiResponse<String> response = SuccessResponse.<String>builder()
+                .code(code)
+                .message(message)
+                .data(data)
+                .build();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(response);
+
+        // then]
+        assertThat(json).contains("data");
+        assertThat(json).doesNotContain("error");
+        assertThat(json).doesNotContain("errorCode");
     }
 
 }

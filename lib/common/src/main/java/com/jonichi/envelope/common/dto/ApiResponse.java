@@ -1,7 +1,10 @@
 package com.jonichi.envelope.common.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.time.Instant;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class ApiResponse<T> {
 
     private final boolean success;
@@ -34,5 +37,5 @@ public abstract class ApiResponse<T> {
 
     public abstract T getData();
     public abstract T getError();
-    public abstract T getErrorCode();
+    public abstract String getErrorCode();
 }

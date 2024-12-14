@@ -4,20 +4,35 @@ import com.jonichi.envelope.common.constant.ErrorCode;
 import com.jonichi.envelope.common.dto.ApiResponse;
 import com.jonichi.envelope.common.dto.ErrorResponse;
 import com.jonichi.envelope.common.exception.EnvelopeDuplicateException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+/**
+ * Global exception handler for the Envelope application.
+ *
+ * <p>This class handles various types of exceptions thrown throughout the application
+ * and provides appropriate HTTP responses to the client. It includes handlers for validation
+ * errors, custom application exceptions, and general exceptions.</p>
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    /**
+     * Handles {@link MethodArgumentNotValidException} exceptions.
+     *
+     * <p>These exceptions occur when validation constraints on request parameters are violated.
+     * The response contains a detailed map of field-specific error messages.</p>
+     *
+     * @param e the exception thrown due to validation errors
+     * @return a {@link ResponseEntity} with a structured validation error response
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Map<String, List<String>>>> handleNotValidException(
             MethodArgumentNotValidException e
@@ -42,8 +57,19 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(response);
     }
 
+    /**
+     * Handles {@link EnvelopeDuplicateException} exceptions.
+     *
+     * <p>These exceptions occur when an attempt is made to create a duplicate resource,
+     * such as a user or entity that already exists.</p>
+     *
+     * @param e the exception thrown when a duplicate resource is detected
+     * @return a {@link ResponseEntity} with a duplicate error response
+     */
     @ExceptionHandler(EnvelopeDuplicateException.class)
-    public ResponseEntity<ApiResponse<Void>> handleEnvelopeDuplicateException(EnvelopeDuplicateException e) {
+    public ResponseEntity<ApiResponse<Void>> handleEnvelopeDuplicateException(
+            EnvelopeDuplicateException e
+    ) {
 
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
@@ -57,6 +83,15 @@ public class GlobalExceptionHandler {
 
     }
 
+    /**
+     * Handles all uncaught exceptions in the application.
+     *
+     * <p>This is a fallback handler that catches any exceptions not explicitly handled by other
+     * methods. It returns a generic "Internal Server Error" response.</p>
+     *
+     * @param e the exception that was not explicitly handled
+     * @return a {@link ResponseEntity} with an internal server error response
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleAll(Exception e) {
 

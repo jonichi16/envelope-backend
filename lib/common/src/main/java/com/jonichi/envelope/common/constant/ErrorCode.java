@@ -1,5 +1,12 @@
 package com.jonichi.envelope.common.constant;
 
+/**
+ * Constants representing error codes used throughout the application.
+ *
+ * <p>Each error code corresponds to a specific type of error, making it easier to identify
+ * and handle errors consistently in the application. These error codes are typically included
+ * in API responses to help clients understand the nature of the error.</p>
+ */
 public class ErrorCode {
     public static final String NESTED_ERROR = "ERR_001";
     public static final String NOT_FOUND = "ERR_002";

@@ -2,6 +2,8 @@ package com.jonichi.envelope.common.advice;
 
 import com.jonichi.envelope.common.constant.ErrorCode;
 import com.jonichi.envelope.common.dto.ApiResponse;
+import com.jonichi.envelope.common.dto.ErrorResponse;
+import com.jonichi.envelope.common.exception.EnvelopeDuplicateException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
@@ -20,23 +22,6 @@ import static org.mockito.Mockito.when;
 public class GlobalExceptionHandlerTest {
 
     private final GlobalExceptionHandler globalExceptionHandler = new GlobalExceptionHandler();
-
-    @Test
-    public void handleAll_shouldReturn500InternalServerError() throws Exception {
-        // given
-        Exception exception = new RuntimeException("Something went wrong");
-
-        // when
-        ResponseEntity<ApiResponse<Void>> response = globalExceptionHandler.handleAll(exception);
-
-        // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
-        assertThat(Objects.requireNonNull(response.getBody()).getCode()).isEqualTo(500);
-        assertThat(response.getBody().isSuccess()).isFalse();
-        assertThat(response.getBody().getMessage()).isEqualTo("Internal Server Error");
-        assertThat(response.getBody().getErrorCode()).isEqualTo(ErrorCode.INTERNAL_SERVER_ERROR);
-        assertThat(response.getBody().getTimestamp()).isNotNull();
-    }
 
     @Test
     public void handleNotValidException_shouldReturnBadRequestError() throws Exception {
@@ -74,6 +59,40 @@ public class GlobalExceptionHandlerTest {
         assertThat(errors).isNotNull();
         assertThat(errors.get("field1").getFirst()).contains("must not be null");
         assertThat(errors.get("field2").getFirst()).contains("must not be null");
+    }
+
+    @Test
+    public void handleEnvelopeDuplicateException_shouldReturnBadRequestError() throws Exception {
+        // given
+        EnvelopeDuplicateException exception = new EnvelopeDuplicateException("Object already exists");
+
+        // when
+        ResponseEntity<ApiResponse<Void>> response = globalExceptionHandler.handleEnvelopeDuplicateException(exception);
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(Objects.requireNonNull(response.getBody()).getCode()).isEqualTo(400);
+        assertThat(response.getBody().isSuccess()).isFalse();
+        assertThat(response.getBody().getMessage()).isEqualTo("Object already exists");
+        assertThat(response.getBody().getErrorCode()).isEqualTo(ErrorCode.DUPLICATE);
+        assertThat(response.getBody().getTimestamp()).isNotNull();
+    }
+
+    @Test
+    public void handleAll_shouldReturn500InternalServerError() throws Exception {
+        // given
+        Exception exception = new RuntimeException("Something went wrong");
+
+        // when
+        ResponseEntity<ApiResponse<Void>> response = globalExceptionHandler.handleAll(exception);
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(Objects.requireNonNull(response.getBody()).getCode()).isEqualTo(500);
+        assertThat(response.getBody().isSuccess()).isFalse();
+        assertThat(response.getBody().getMessage()).isEqualTo("Internal Server Error");
+        assertThat(response.getBody().getErrorCode()).isEqualTo(ErrorCode.INTERNAL_SERVER_ERROR);
+        assertThat(response.getBody().getTimestamp()).isNotNull();
     }
 
 }

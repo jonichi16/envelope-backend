@@ -3,6 +3,7 @@ package com.jonichi.envelope.common.advice;
 import com.jonichi.envelope.common.constant.ErrorCode;
 import com.jonichi.envelope.common.dto.ApiResponse;
 import com.jonichi.envelope.common.dto.ErrorResponse;
+import com.jonichi.envelope.common.exception.EnvelopeDuplicateException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -39,6 +40,21 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.status(status).body(response);
+    }
+
+    @ExceptionHandler(EnvelopeDuplicateException.class)
+    public ResponseEntity<ApiResponse<Void>> handleEnvelopeDuplicateException(EnvelopeDuplicateException e) {
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        ApiResponse<Void> response = ErrorResponse.<Void>builder()
+                .code(status.value())
+                .message(e.getMessage())
+                .errorCode(ErrorCode.DUPLICATE)
+                .build();
+
+        return ResponseEntity.status(status).body(response);
+
     }
 
     @ExceptionHandler(Exception.class)

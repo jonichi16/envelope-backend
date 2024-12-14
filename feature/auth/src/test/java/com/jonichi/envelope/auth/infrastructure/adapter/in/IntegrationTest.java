@@ -89,6 +89,22 @@ public class IntegrationTest {
     }
 
     @Test
+    public void register_withInvalidFields_shouldReturn400BadRequestError() throws Exception {
+        // given
+        String invalidRequest = "{ \"username\": \"test\", " +
+                "\"email\": \"test@mail.com\", " +
+                "\"test\": \"sample\", " +
+                "\"password\": \"12345\" }";
+
+        // when, then
+        mockMvc.perform(post("/api/v1/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidRequest))
+                .andExpect(status().isBadRequest());
+    }
+
+
+    @Test
     public void register_withError_shouldReturn500InternalServerError() throws Exception {
         // given
         String username = "test";
@@ -119,6 +135,51 @@ public class IntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(authenticateRequestDTO)))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void authenticate_withMissingFields_shouldReturn400BadRequestError() throws Exception {
+        // given
+        String invalidRequest = "{ }";
+
+        // when, then
+        mockMvc.perform(post("/api/v1/auth/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidRequest))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void authenticate_withInvalidFields_shouldReturn400BadRequestError() throws Exception {
+        // given
+        String invalidRequest = "{ \"username\": \"test\", " +
+                "\"email\": \"invalidEmail\", " +
+                "\"password\": \"12345\" }";
+
+        // when, then
+        mockMvc.perform(post("/api/v1/auth/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidRequest))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void authenticate_withError_shouldReturn500InternalServerError() throws Exception {
+        // given
+        String username = "test";
+        String password = "secret";
+
+        // when
+        when(authUseCase.authenticate(username, password)).thenThrow(
+                new RuntimeException("Something went wrong")
+        );
+        AuthenticateRequestDTO authenticateRequestDTO = new AuthenticateRequestDTO(username, password);
+
+        // then
+        mockMvc.perform(post("/api/v1/auth/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(authenticateRequestDTO)))
+                .andExpect(status().isInternalServerError());
     }
 
 }

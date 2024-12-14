@@ -14,7 +14,6 @@ import jakarta.validation.constraints.NotEmpty;
  * @param email the email address of the user
  * @param password the password chosen by the user for registration
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public record RegisterRequestDTO(
         @NotEmpty(message = "Username is required")
         String username,

@@ -81,7 +81,7 @@ public class AuthController {
      */
     @PostMapping("/authenticate")
     public ResponseEntity<ApiResponse<AuthTokenDTO>> authenticate(
-            @RequestBody AuthenticateRequestDTO authenticateRequestDTO
+            @RequestBody @Valid AuthenticateRequestDTO authenticateRequestDTO
     ) {
 
         String token = authUseCase.authenticate(

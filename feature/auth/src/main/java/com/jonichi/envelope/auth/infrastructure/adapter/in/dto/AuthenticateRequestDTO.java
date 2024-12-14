@@ -1,5 +1,7 @@
 package com.jonichi.envelope.auth.infrastructure.adapter.in.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+
 /**
  * A DTO for user authentication requests.
  *
@@ -9,5 +11,12 @@ package com.jonichi.envelope.auth.infrastructure.adapter.in.dto;
  * @param username the username of the user attempting to authenticate
  * @param password the password of the user attempting to authenticate
  */
-public record AuthenticateRequestDTO(String username, String password) {
+public record AuthenticateRequestDTO(
+
+        @NotEmpty(message = "Username is required")
+        String username,
+
+        @NotEmpty(message = "Password is required")
+        String password
+) {
 }

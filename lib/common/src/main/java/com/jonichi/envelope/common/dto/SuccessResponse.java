@@ -1,5 +1,9 @@
 package com.jonichi.envelope.common.dto;
 
+
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+@JsonPropertyOrder({"success", "code", "message", "data", "timestamp"})
 public class SuccessResponse<T> extends ApiResponse<T> {
 
     private final T data;
@@ -16,12 +20,12 @@ public class SuccessResponse<T> extends ApiResponse<T> {
 
     @Override
     public T getError() {
-        throw new UnsupportedOperationException("Error field is not supported");
+        return null;
     }
 
     @Override
-    public T getErrorCode() {
-        throw new UnsupportedOperationException("ErrorCode field is not supported");
+    public String getErrorCode() {
+        return null;
     }
 
     public static <T> SuccessResponseBuilder<T> builder() {

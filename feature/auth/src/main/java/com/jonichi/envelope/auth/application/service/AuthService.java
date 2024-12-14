@@ -1,6 +1,7 @@
 package com.jonichi.envelope.auth.application.service;
 
 import com.jonichi.envelope.auth.application.port.out.UserRepositoryPort;
+import com.jonichi.envelope.auth.application.port.out.util.JwtUtilPort;
 import com.jonichi.envelope.auth.application.port.out.util.PasswordEncoderPort;
 import com.jonichi.envelope.auth.domain.User;
 
@@ -8,17 +9,21 @@ public class AuthService {
 
     private final UserRepositoryPort userRepositoryPort;
     private final PasswordEncoderPort passwordEncoderPort;
+    private final JwtUtilPort jwtUtilPort;
 
-    public AuthService(UserRepositoryPort userRepositoryPort, PasswordEncoderPort passwordEncoderPort) {
+    public AuthService(UserRepositoryPort userRepositoryPort, PasswordEncoderPort passwordEncoderPort, JwtUtilPort jwtUtilPort) {
         this.userRepositoryPort = userRepositoryPort;
         this.passwordEncoderPort = passwordEncoderPort;
+        this.jwtUtilPort = jwtUtilPort;
     }
 
     public String register(String username, String email, String password) {
 
         String encodedPassword = passwordEncoderPort.encode(password);
-        userRepositoryPort.save(new User(username, email, encodedPassword));
 
-        return "token";
+        User user = new User(username, email, encodedPassword);
+        userRepositoryPort.save(user);
+
+        return jwtUtilPort.generateToken(user);
     }
 }

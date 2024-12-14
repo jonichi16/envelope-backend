@@ -2,6 +2,7 @@ package com.jonichi.envelope.auth.infrastructure.adapter.in;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jonichi.envelope.auth.application.port.in.AuthUseCase;
+import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.AuthenticateRequestDTO;
 import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.RegisterRequestDTO;
 import com.jonichi.envelope.common.exception.EnvelopeDuplicateException;
 import org.junit.jupiter.api.Test;
@@ -105,6 +106,19 @@ public class IntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerRequestDTO)))
                 .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    public void authenticate_shouldReturn20OK() throws Exception {
+        String username = "test";
+        String password = "secret";
+
+        AuthenticateRequestDTO authenticateRequestDTO = new AuthenticateRequestDTO(username, password);
+
+        mockMvc.perform(post("/api/v1/auth/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(authenticateRequestDTO)))
+                .andExpect(status().isOk());
     }
 
 }

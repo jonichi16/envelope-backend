@@ -67,4 +67,13 @@ public class AuthController {
         return ResponseEntity.status(status).body(response);
     }
 
+    @PostMapping("/authenticate")
+    public ResponseEntity<ApiResponse<AuthTokenDTO>> authenticate(
+
+    ) {
+        HttpStatus status = HttpStatus.OK;
+
+        return ResponseEntity.status(status).build();
+    }
+
 }

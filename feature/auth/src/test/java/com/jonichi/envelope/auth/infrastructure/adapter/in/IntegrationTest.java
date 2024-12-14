@@ -3,6 +3,7 @@ package com.jonichi.envelope.auth.infrastructure.adapter.in;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jonichi.envelope.auth.application.port.in.AuthUseCase;
 import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.RegisterRequestDTO;
+import com.jonichi.envelope.common.exception.EnvelopeDuplicateException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -38,6 +39,52 @@ public class IntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerRequestDTO)))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void register_withInvalidEmail_shouldReturn400BadRequestError() throws Exception {
+        // given
+        String invalidRequest = "{ \"username\": \"test\", " +
+                "\"email\": \"invalidEmail\", " +
+                "\"password\": \"12345\" }";
+
+        // when, then
+        mockMvc.perform(post("/api/v1/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidRequest))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void register_withMissingFields_shouldReturn400BadRequestError() throws Exception {
+        // given
+        String invalidRequest = "{ \"email\": \"test@mail.com\" }";
+
+        // when, then
+        mockMvc.perform(post("/api/v1/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidRequest))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void register_withDuplicateUsername_shouldReturn400BadRequestError() throws Exception {
+        // given
+        String username = "test";
+        String email = "test@mail.com";
+        String password = "secret";
+
+        // when
+        when(authUseCase.register(username, email, password)).thenThrow(
+                new EnvelopeDuplicateException("Username already exists")
+        );
+        RegisterRequestDTO registerRequestDTO = new RegisterRequestDTO(username, email, password);
+
+        // then
+        mockMvc.perform(post("/api/v1/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(registerRequestDTO)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

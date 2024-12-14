@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -46,6 +47,20 @@ public class AuthServiceTest {
         verify(passwordEncoderPort, times(1)).encode(password);
         verify(jwtUtilPort, times(1)).generateToken(user);
         assertThat(token).isEqualTo("jwtToken");
+    }
+
+    @Test
+    public void register_shouldCheckForExistingUser() throws Exception {
+        // given
+        String username = "test";
+        String email = "test@mail.com";
+        String password = "secret";
+
+        // when, then
+        assertThatNoException().isThrownBy(() ->
+                authService.register(username, email, password));
+        verify(userRepositoryPort, times(1)).findByUsername(username);
+
     }
 
     @Test

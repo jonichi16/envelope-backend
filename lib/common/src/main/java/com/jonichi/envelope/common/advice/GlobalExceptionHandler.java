@@ -4,17 +4,16 @@ import com.jonichi.envelope.common.constant.ErrorCode;
 import com.jonichi.envelope.common.dto.ApiResponse;
 import com.jonichi.envelope.common.dto.ErrorResponse;
 import com.jonichi.envelope.common.exception.EnvelopeDuplicateException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Global exception handler for the Envelope application.
@@ -84,6 +83,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(response);
 
     }
+
     /**
      * Handles {@link NoResourceFoundException} and maps it to a 404 Not Found response.
      *
@@ -95,7 +95,9 @@ public class GlobalExceptionHandler {
      * @return a {@link ResponseEntity} containing a structured error response
      */
     @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<ApiResponse<Void>> handleNoResourceFoundException(NoResourceFoundException e) {
+    public ResponseEntity<ApiResponse<Void>> handleNoResourceFoundException(
+            NoResourceFoundException e
+    ) {
 
         HttpStatus status = HttpStatus.NOT_FOUND;
 

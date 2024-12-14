@@ -21,4 +21,16 @@ public interface AuthUseCase {
      * @return a JWT token representing the authenticated user
      */
     String register(String username, String email, String password);
+
+    /**
+     * Authenticates an existing user and returns an authentication token.
+     *
+     * <p>This method accepts the user's username and password, performs the authentication process,
+     * and returns a JWT token for the user if the credentials are valid.</p>
+     *
+     * @param username the username of the user to authenticate
+     * @param password the password of the user to authenticate
+     * @return a JWT token representing the authenticated user
+     */
+    String authenticate(String username, String password);
 }

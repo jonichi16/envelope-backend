@@ -1,7 +1,10 @@
 package com.jonichi.envelope.auth.infrastructure.adapter.in;
 
 import com.jonichi.envelope.auth.application.port.in.AuthUseCase;
+import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.AuthTokenDTO;
 import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.RegisterRequestDTO;
+import com.jonichi.envelope.common.dto.ApiResponse;
+import com.jonichi.envelope.common.dto.SuccessResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +24,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(
+    public ResponseEntity<ApiResponse<AuthTokenDTO>> register(
             @RequestBody @Valid RegisterRequestDTO registerRequestDTO
     ) {
 
@@ -31,7 +34,16 @@ public class AuthController {
                 registerRequestDTO.password()
         );
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(token);
+        AuthTokenDTO authTokenDTO = new AuthTokenDTO(token);
+
+        HttpStatus status = HttpStatus.CREATED;
+        ApiResponse<AuthTokenDTO> response = SuccessResponse.<AuthTokenDTO>builder()
+                .code(status.value())
+                .message("User registered successfully")
+                .data(authTokenDTO)
+                .build();
+
+        return ResponseEntity.status(status).body(response);
     }
 
 }

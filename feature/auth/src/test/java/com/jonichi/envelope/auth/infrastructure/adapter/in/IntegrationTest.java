@@ -26,7 +26,7 @@ public class IntegrationTest {
     private ObjectMapper objectMapper;
 
     @Test
-    public void postRegisterEndpointShouldReturn201Created() throws Exception {
+    public void register_shouldReturn201Created() throws Exception {
         String username = "test";
         String email = "test@mail.com";
         String password = "secret";
@@ -37,6 +37,15 @@ public class IntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerRequestDTO)))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void register_withError_shouldReturn500InternalServerError() throws Exception {
+        // given
+
+        // when
+
+        // then
     }
 
 }

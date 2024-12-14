@@ -5,9 +5,12 @@ import com.jonichi.envelope.common.dto.ApiResponse;
 import com.jonichi.envelope.common.exception.EnvelopeDuplicateException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.mock.http.MockHttpInputMessage;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -76,6 +79,48 @@ public class GlobalExceptionHandlerTest {
         assertThat(response.getBody().isSuccess()).isFalse();
         assertThat(response.getBody().getMessage()).isEqualTo("Object already exists");
         assertThat(response.getBody().getErrorCode()).isEqualTo(ErrorCode.DUPLICATE);
+        assertThat(response.getBody().getTimestamp()).isNotNull();
+    }
+
+    @Test
+    public void handleHttpMessageNotReadableException_shouldReturnBadRequestError() throws Exception {
+        // given
+        HttpInputMessage inputMessage = new MockHttpInputMessage(new byte[0]);
+        HttpMessageNotReadableException exception = new HttpMessageNotReadableException(
+                "JSON parse error: Unrecognized field \"email\" " +
+                        "(class com.jonichi.envelope.auth.infrastructure.adapter.in.dto.AuthenticateRequestDTO), " +
+                        "not marked as ignorable", inputMessage);
+
+        // when
+        ResponseEntity<ApiResponse<Void>> response =
+                globalExceptionHandler.handleHttpMessageNotReadableException(exception);
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(Objects.requireNonNull(response.getBody()).getCode()).isEqualTo(400);
+        assertThat(response.getBody().isSuccess()).isFalse();
+        assertThat(response.getBody().getMessage()).isEqualTo("email is not allowed");
+        assertThat(response.getBody().getErrorCode()).isEqualTo(ErrorCode.NOT_ALLOWED);
+        assertThat(response.getBody().getTimestamp()).isNotNull();
+    }
+
+    @Test
+    public void handleHttpMessageNotReadableException_shouldReturnDefaultMessage() throws Exception {
+        // given
+        HttpInputMessage inputMessage = new MockHttpInputMessage(new byte[0]);
+        HttpMessageNotReadableException exception = new HttpMessageNotReadableException(
+                "Something went wrong", inputMessage);
+
+        // when
+        ResponseEntity<ApiResponse<Void>> response =
+                globalExceptionHandler.handleHttpMessageNotReadableException(exception);
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(Objects.requireNonNull(response.getBody()).getCode()).isEqualTo(400);
+        assertThat(response.getBody().isSuccess()).isFalse();
+        assertThat(response.getBody().getMessage()).isEqualTo(exception.getMessage());
+        assertThat(response.getBody().getErrorCode()).isEqualTo(ErrorCode.NOT_ALLOWED);
         assertThat(response.getBody().getTimestamp()).isNotNull();
     }
 

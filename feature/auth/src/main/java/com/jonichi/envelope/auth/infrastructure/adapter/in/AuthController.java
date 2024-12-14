@@ -13,16 +13,37 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller class responsible for handling user authentication-related endpoints.
+ *
+ */
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
     private final AuthUseCase authUseCase;
 
+    /**
+     * Constructs a new {@code AuthController} with the specified {@link AuthUseCase}.
+     *
+     * @param authUseCase the service that handles authentication-related business logic
+     */
     public AuthController(AuthUseCase authUseCase) {
         this.authUseCase = authUseCase;
     }
 
+    /**
+     * Registers a new user and returns an authentication token.
+     *
+     * <p>This endpoint accepts a {@link RegisterRequestDTO} containing the user's
+     * registration details (username, email, and password). It delegates the registration
+     * process to the {@link AuthUseCase} and returns an authentication token on success.</p>
+     *
+     * @param registerRequestDTO the registration request data containing username, email, and
+     *     password
+     * @return a {@link ResponseEntity} containing a {@link ApiResponse} with an authentication
+     *     token
+     */
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<AuthTokenDTO>> register(
             @RequestBody @Valid RegisterRequestDTO registerRequestDTO

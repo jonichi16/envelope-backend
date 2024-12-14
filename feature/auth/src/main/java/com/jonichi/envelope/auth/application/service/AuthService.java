@@ -4,6 +4,7 @@ import com.jonichi.envelope.auth.application.port.out.UserRepositoryPort;
 import com.jonichi.envelope.auth.application.port.out.util.JwtUtilPort;
 import com.jonichi.envelope.auth.application.port.out.util.PasswordEncoderPort;
 import com.jonichi.envelope.auth.domain.User;
+import com.jonichi.envelope.common.exception.EnvelopeDuplicateException;
 
 public class AuthService {
 
@@ -18,9 +19,11 @@ public class AuthService {
     }
 
     public String register(String username, String email, String password) {
+        if (userRepositoryPort.findByUsername(username).isPresent()) {
+            throw new EnvelopeDuplicateException("Username already exists");
+        }
 
         String encodedPassword = passwordEncoderPort.encode(password);
-
         User user = new User(username, email, encodedPassword);
         userRepositoryPort.save(user);
 

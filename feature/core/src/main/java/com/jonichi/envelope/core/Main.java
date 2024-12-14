@@ -19,15 +19,12 @@ import org.springframework.context.annotation.ComponentScan;
  *   setup.</li>
  *   <li>{@link ComponentScan} - Specifies the base packages to scan for Spring-managed
  *   components.</li>
- *   <li>{@link } - Enables Spring Data JPA repositories in the defined base
- *   packages.</li>
  *   <li>{@link EntityScan} - Configures the scanning of JPA entity classes within the specified
  *   packages.</li>
  * </ul>
  */
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.jonichi.envelope"})
-//@EnableJpaRepositories(basePackages = {"com.jonichi.envelope"}) tempo disable
 @EntityScan(basePackages = {"com.jonichi.envelope"})
 public class Main {
 

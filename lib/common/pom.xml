@@ -12,6 +12,7 @@
 
     <groupId>com.jonichi.envelope</groupId>
     <artifactId>common</artifactId>
+    <packaging>jar</packaging>
 
     <properties>
         <java.version>21</java.version>

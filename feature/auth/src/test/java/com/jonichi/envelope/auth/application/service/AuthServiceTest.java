@@ -1,6 +1,7 @@
 package com.jonichi.envelope.auth.application.service;
 
 import com.jonichi.envelope.auth.application.port.out.UserRepositoryPort;
+import com.jonichi.envelope.auth.application.port.out.util.AuthenticationManagerPort;
 import com.jonichi.envelope.auth.application.port.out.util.JwtUtilPort;
 import com.jonichi.envelope.auth.application.port.out.util.PasswordEncoderPort;
 import com.jonichi.envelope.auth.domain.User;
@@ -29,6 +30,8 @@ public class AuthServiceTest {
     private PasswordEncoderPort passwordEncoderPort;
     @Mock
     private JwtUtilPort jwtUtilPort;
+    @Mock
+    private AuthenticationManagerPort authenticationManagerPort;
 
     @InjectMocks
     private AuthService authService;
@@ -102,6 +105,24 @@ public class AuthServiceTest {
         verify(userRepositoryPort, times(1)).save(
                 new User(username, email, encodedPassword)
         );
+    }
+
+    @Test
+    public void authenticate_shouldReturnJwtToken() throws Exception {
+        // given
+        String username = "test";
+        String email = "test@mail.com";
+        String password = "secret";
+
+        User user = new User(username, email, password);
+
+        // when
+        when(userRepositoryPort.findByUsername(username)).thenReturn(Optional.of(user));
+        when(jwtUtilPort.generateToken(user)).thenReturn("encodedToken");
+
+        // then
+        assertThat(authService.authenticate(username, password)).isEqualTo("encodedToken");
+        verify(authenticationManagerPort, times(1)).authenticate(username, password);
     }
 
 }

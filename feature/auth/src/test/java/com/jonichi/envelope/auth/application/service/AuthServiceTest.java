@@ -4,14 +4,18 @@ import com.jonichi.envelope.auth.application.port.out.UserRepositoryPort;
 import com.jonichi.envelope.auth.application.port.out.util.JwtUtilPort;
 import com.jonichi.envelope.auth.application.port.out.util.PasswordEncoderPort;
 import com.jonichi.envelope.auth.domain.User;
+import com.jonichi.envelope.common.exception.EnvelopeDuplicateException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -61,6 +65,25 @@ public class AuthServiceTest {
                 authService.register(username, email, password));
         verify(userRepositoryPort, times(1)).findByUsername(username);
 
+    }
+
+    @Test
+    public void register_withDuplicate_shouldThrowEnvelopeDuplicateException() throws Exception {
+        // given
+        String username = "test";
+        String email = "test@mail.com";
+        String password = "secret";
+
+        // when
+        when(userRepositoryPort.findByUsername(username))
+                .thenReturn(Optional.of(
+                        new User(username, email, password)
+                ));
+
+        // then
+        assertThatThrownBy(() -> authService.register(username, email, password))
+                .isInstanceOf(EnvelopeDuplicateException.class)
+                .hasMessage("Username already exists");
     }
 
     @Test

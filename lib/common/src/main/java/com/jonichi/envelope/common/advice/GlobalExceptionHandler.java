@@ -85,6 +85,18 @@ public class GlobalExceptionHandler {
 
     }
 
+    /**
+     * Handles {@link HttpMessageNotReadableException} by returning a custom error response.
+     *
+     * <p>This method catches the exception when the request body cannot be read or contains an
+     * unrecognized field. If the exception message contains the phrase "Unrecognized field", it
+     * extracts the field name and includes it in the error message indicating that the field is
+     * not allowed.</p>
+     *
+     * @param e the {@link HttpMessageNotReadableException} thrown when the request body is
+     *          unreadable or contains unrecognized fields
+     * @return a {@link ResponseEntity} containing an {@link ApiResponse} with the error details
+     */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiResponse<Void>> handleHttpMessageNotReadableException(
             HttpMessageNotReadableException e

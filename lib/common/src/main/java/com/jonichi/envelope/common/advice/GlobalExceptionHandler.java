@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,6 +28,8 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     /**
      * Handles {@link MethodArgumentNotValidException} exceptions.
      *
@@ -40,6 +45,7 @@ public class GlobalExceptionHandler {
     ) {
         Map<String, List<String>> errorMap = new HashMap<>();
         e.getBindingResult().getFieldErrors().forEach(error -> {
+            logger.error("Validation Error: {}", error.getDefaultMessage());
             String field = error.getField();
             String errorMessage = error.getDefaultMessage();
 
@@ -71,6 +77,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleEnvelopeDuplicateException(
             EnvelopeDuplicateException e
     ) {
+        logger.error("Duplicate Error: {}", e.getMessage());
 
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
@@ -82,6 +89,39 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(status).body(response);
 
+    }
+
+
+    /**
+     * Handles {@link DataIntegrityViolationException} exceptions, typically caused by
+     * database integrity constraints such as unique key violations.
+     *
+     * <p>Extracts the duplicate field from the exception message and constructs a
+     * standardized API error response with a BAD_REQUEST status and a descriptive error
+     * message.</p>
+     *
+     * @param e the {@code DataIntegrityViolationException} to handle
+     * @return a {@link ResponseEntity} containing the error response and the HTTP status
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse<Void>> handleDataIntegrityViolationException(
+            DataIntegrityViolationException e
+    ) {
+        logger.error("Data Integrity Error: {}", e.getMessage());
+
+        String message = e.getMessage();
+        String duplicateField = message.substring(
+                message.indexOf("(") + 1,
+                message.indexOf(")", message.indexOf("(") + 1));
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        ApiResponse<Void> response = ErrorResponse.<Void>builder()
+                .code(status.value())
+                .message(duplicateField + " already exists")
+                .errorCode(ErrorCode.DUPLICATE)
+                .build();
+
+        return ResponseEntity.status(status).body(response);
     }
 
     /**
@@ -98,6 +138,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleNoResourceFoundException(
             NoResourceFoundException e
     ) {
+        logger.error("No Resource Error: {}", e.getMessage());
 
         HttpStatus status = HttpStatus.NOT_FOUND;
 
@@ -121,6 +162,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleAll(Exception e) {
+        logger.error("Error: {}", e.getMessage());
 
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         ApiResponse<Void> response = ErrorResponse.<Void>builder()

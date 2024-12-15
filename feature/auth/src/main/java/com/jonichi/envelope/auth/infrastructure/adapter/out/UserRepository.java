@@ -18,8 +18,22 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class UserRepository implements UserRepositoryPort {
 
-    private UserJpaRepository userJpaRepository;
-    private TransactionalHandler transactionalHandler;
+    private final UserJpaRepository userJpaRepository;
+    private final TransactionalHandler transactionalHandler;
+
+    /**
+     * Constructs a {@link UserRepository} with required dependencies.
+     *
+     * @param userJpaRepository the JPA repository for direct database interactions
+     * @param transactionalHandler the handler to ensure transactional integrity
+     */
+    public UserRepository(
+            UserJpaRepository userJpaRepository,
+            TransactionalHandler transactionalHandler
+    ) {
+        this.userJpaRepository = userJpaRepository;
+        this.transactionalHandler = transactionalHandler;
+    }
 
     /**
      * Saves a {@link User} entity to the database.

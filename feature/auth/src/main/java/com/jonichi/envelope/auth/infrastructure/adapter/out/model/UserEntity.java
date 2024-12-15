@@ -64,6 +64,13 @@ public class UserEntity implements UserDetails {
     private LocalDateTime updatedDate;
 
     /**
+     * Constructs a new {@code UserEntity}.
+     *
+     */
+    public UserEntity() {
+    }
+
+    /**
      * Constructs a new {@code UserEntity} with the specified fields.
      *
      * @param id       the user's ID

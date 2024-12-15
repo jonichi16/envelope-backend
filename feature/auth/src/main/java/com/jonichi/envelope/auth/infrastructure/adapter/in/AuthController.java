@@ -7,6 +7,8 @@ import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.RegisterRequestDT
 import com.jonichi.envelope.common.dto.ApiResponse;
 import com.jonichi.envelope.common.dto.SuccessResponse;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
     private final AuthUseCase authUseCase;
 
     /**
@@ -49,6 +52,12 @@ public class AuthController {
     public ResponseEntity<ApiResponse<AuthTokenDTO>> register(
             @RequestBody @Valid RegisterRequestDTO registerRequestDTO
     ) {
+        logger.info("Start - Controller - register");
+        logger.debug(
+                "Request: username={}, email={}",
+                registerRequestDTO.username(),
+                registerRequestDTO.email()
+        );
 
         String token = authUseCase.register(
                 registerRequestDTO.username(),
@@ -65,6 +74,7 @@ public class AuthController {
                 .data(authTokenDTO)
                 .build();
 
+        logger.info("End - Controller - register");
         return ResponseEntity.status(status).body(response);
     }
 
@@ -83,6 +93,11 @@ public class AuthController {
     public ResponseEntity<ApiResponse<AuthTokenDTO>> authenticate(
             @RequestBody @Valid AuthenticateRequestDTO authenticateRequestDTO
     ) {
+        logger.info("Start - Controller - authenticate");
+        logger.debug(
+                "Request: username={}",
+                authenticateRequestDTO.username()
+        );
 
         String token = authUseCase.authenticate(
                 authenticateRequestDTO.username(),
@@ -98,6 +113,7 @@ public class AuthController {
                 .data(authTokenDTO)
                 .build();
 
+        logger.info("End - Controller - authenticate");
         return ResponseEntity.status(status).body(response);
     }
 

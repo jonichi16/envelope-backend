@@ -7,6 +7,8 @@ import com.jonichi.envelope.auth.application.port.out.util.JwtUtilPort;
 import com.jonichi.envelope.auth.application.port.out.util.PasswordEncoderPort;
 import com.jonichi.envelope.auth.domain.User;
 import com.jonichi.envelope.common.exception.EnvelopeDuplicateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Service class that implements the user authentication and registration use cases.
@@ -17,6 +19,7 @@ import com.jonichi.envelope.common.exception.EnvelopeDuplicateException;
  */
 public class AuthService implements AuthUseCase {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
     private final UserRepositoryPort userRepositoryPort;
     private final PasswordEncoderPort passwordEncoderPort;
     private final JwtUtilPort jwtUtilPort;
@@ -44,6 +47,8 @@ public class AuthService implements AuthUseCase {
 
     @Override
     public String register(String username, String email, String password) {
+        logger.info("Start - Service - register");
+
         if (userRepositoryPort.findByUsername(username).isPresent()) {
             throw new EnvelopeDuplicateException("Username already exists");
         }
@@ -52,16 +57,19 @@ public class AuthService implements AuthUseCase {
         User user = new User(username, email, encodedPassword);
         userRepositoryPort.save(user);
 
+        logger.info("End - Service - register");
         return jwtUtilPort.generateToken(user);
     }
 
     @Override
     public String authenticate(String username, String password) {
+        logger.info("Start - Service - authenticate");
 
         authenticationManagerPort.authenticate(username, password);
 
         User user = userRepositoryPort.findByUsername(username).orElseThrow();
 
+        logger.info("End - Service - authenticate");
         return jwtUtilPort.generateToken(user);
     }
 }

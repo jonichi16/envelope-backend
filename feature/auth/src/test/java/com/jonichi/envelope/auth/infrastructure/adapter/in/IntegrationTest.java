@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -111,6 +112,26 @@ public class IntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerRequestDTO)))
                 .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    public void authenticate_withWrongCredentials_shouldReturn401UnauthorizedError() throws Exception {
+        // given
+        String username = "test";
+        String password = "secret";
+
+        AuthenticateRequestDTO authenticateRequestDTO = new AuthenticateRequestDTO(username, password);
+
+        // when
+        when(authUseCase.authenticate(username, password)).thenThrow(
+                new BadCredentialsException("Bad credentials")
+        );
+
+        // then
+        mockMvc.perform(post("/api/v1/auth/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(authenticateRequestDTO)))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test

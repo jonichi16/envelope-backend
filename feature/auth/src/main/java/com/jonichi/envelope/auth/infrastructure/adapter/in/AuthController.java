@@ -54,9 +54,10 @@ public class AuthController {
     ) {
         logger.info("Start - Controller - register");
         logger.debug(
-                "Request: username={}, email={}",
+                "Request: username={}, email={}, password={}",
                 registerRequestDTO.username(),
-                registerRequestDTO.email()
+                registerRequestDTO.email(),
+                "******"
         );
 
         String token = authUseCase.register(
@@ -95,8 +96,9 @@ public class AuthController {
     ) {
         logger.info("Start - Controller - authenticate");
         logger.debug(
-                "Request: username={}",
-                authenticateRequestDTO.username()
+                "Request: username={}, password={}",
+                authenticateRequestDTO.username(),
+                "******"
         );
 
         String token = authUseCase.authenticate(

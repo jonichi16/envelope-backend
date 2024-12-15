@@ -10,6 +10,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -73,6 +74,25 @@ public class GlobalExceptionHandlerTest {
         assertThat(Objects.requireNonNull(response.getBody()).getCode()).isEqualTo(400);
         assertThat(response.getBody().isSuccess()).isFalse();
         assertThat(response.getBody().getMessage()).isEqualTo("Object already exists");
+        assertThat(response.getBody().getErrorCode()).isEqualTo(ErrorCode.DUPLICATE);
+        assertThat(response.getBody().getTimestamp()).isNotNull();
+    }
+
+    @Test
+    public void handleDataIntegrityViolationException_shouldReturnBadRequestError() throws Exception {
+        // given
+        DataIntegrityViolationException exception = new DataIntegrityViolationException(
+                "Detail: Key (email)=(test@mail.com) already exists."
+        );
+
+        // when
+        ResponseEntity<ApiResponse<Void>> response = globalExceptionHandler.handleDataIntegrityViolationException(exception);
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(Objects.requireNonNull(response.getBody()).getCode()).isEqualTo(400);
+        assertThat(response.getBody().isSuccess()).isFalse();
+        assertThat(response.getBody().getMessage()).isEqualTo("email already exists");
         assertThat(response.getBody().getErrorCode()).isEqualTo(ErrorCode.DUPLICATE);
         assertThat(response.getBody().getTimestamp()).isNotNull();
     }

@@ -1,8 +1,7 @@
 package com.jonichi.envelope.auth.domain;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import org.junit.jupiter.api.Test;
 
 
 public class UserTest {

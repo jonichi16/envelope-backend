@@ -1,5 +1,12 @@
 package com.jonichi.envelope.auth.domain;
 
+/**
+ * Represents a user in the system.
+ *
+ * <p>The {@code User} class holds the essential information about a user, including the username,
+ * email, password, and role. It is used to represent authenticated users, and it contains methods
+ * for managing the user's identity and credentials.</p>
+ */
 public class User {
 
     private Integer id = null;
@@ -8,12 +15,29 @@ public class User {
     private final String password;
     private Role role = Role.USER;
 
+    /**
+     * Creates a new user with the provided username, email, and password. The role is set to
+     * {@code USER} by default.
+     *
+     * @param username the username of the user
+     * @param email the email address of the user
+     * @param password the password for the user
+     */
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
     }
 
+    /**
+     * Creates a new user with the provided id, username, email, password, and role.
+     *
+     * @param id the unique identifier of the user
+     * @param username the username of the user
+     * @param email the email address of the user
+     * @param password the password for the user
+     * @param role the role of the user, default is {@code USER}
+     */
     public User(Integer id, String username, String email, String password, Role role) {
         this.id = id;
         this.username = username;

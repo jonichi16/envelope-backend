@@ -74,4 +74,28 @@ public class UserEntity {
     public void setRole(Role role) {
         this.role = role;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        UserEntity user = (UserEntity) o;
+
+        if (!username.equals(user.username)) {
+            return false;
+        }
+        if (!email.equals(user.email)) {
+            return false;
+        }
+        return password.equals(user.password);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = username.hashCode();
+        result = 31 * result + email.hashCode();
+        result = 31 * result + password.hashCode();
+        return result;
+    }
 }

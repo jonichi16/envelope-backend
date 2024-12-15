@@ -18,6 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class UserRepositoryTest {
 
     @Mock
+    private UserJpaRepository userJpaRepository;
+    @Mock
     private TransactionalHandler transactionalHandler;
     @InjectMocks
     private UserRepository userRepository;
@@ -47,10 +49,10 @@ public class UserRepositoryTest {
         }).when(transactionalHandler).runInTransaction(any(Runnable.class));
 
         userRepository.save(user);
-        UserEntity userEntity;
+        UserEntity userEntity = UserMapper.toUserEntity(user);
 
         // then
-
+        verify(userJpaRepository, times(1)).save(userEntity);
     }
 
 }

@@ -8,6 +8,13 @@ import com.jonichi.envelope.auth.application.port.out.util.PasswordEncoderPort;
 import com.jonichi.envelope.auth.domain.User;
 import com.jonichi.envelope.common.exception.EnvelopeDuplicateException;
 
+/**
+ * Service class that implements the user authentication and registration use cases.
+ *
+ * <p>The {@code AuthService} class provides the logic for user registration and authentication.
+ * It interacts with the necessary ports for saving users, encoding passwords, authenticating
+ * users, and generating JWT tokens for authenticated users.</p>
+ */
 public class AuthService implements AuthUseCase {
 
     private final UserRepositoryPort userRepositoryPort;
@@ -15,6 +22,14 @@ public class AuthService implements AuthUseCase {
     private final JwtUtilPort jwtUtilPort;
     private final AuthenticationManagerPort authenticationManagerPort;
 
+    /**
+     * Constructs an instance of {@code AuthService}.
+     *
+     * @param userRepositoryPort         the port to interact with the user repository
+     * @param passwordEncoderPort        the port to encode passwords
+     * @param jwtUtilPort                the port to generate JWT tokens
+     * @param authenticationManagerPort  the port to authenticate users
+     */
     public AuthService(
             UserRepositoryPort userRepositoryPort,
             PasswordEncoderPort passwordEncoderPort,

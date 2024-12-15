@@ -5,19 +5,17 @@ import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.AuthTokenDTO;
 import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.AuthenticateRequestDTO;
 import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.RegisterRequestDTO;
 import com.jonichi.envelope.common.dto.ApiResponse;
+import java.util.Objects;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
-
-import java.util.Objects;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthControllerTest {

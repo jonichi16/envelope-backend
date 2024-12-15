@@ -18,7 +18,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
-@Import(GlobalExceptionHandler.class)
 public class IntegrationTest {
 
     @Autowired

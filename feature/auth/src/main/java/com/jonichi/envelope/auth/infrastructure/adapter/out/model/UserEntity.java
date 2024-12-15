@@ -21,16 +21,19 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+/**
+ * Represents the User entity mapped to the "_user" database table.
+ *
+ * <p>This class implements {@link UserDetails} to integrate with Spring Security.
+ * It includes user details like username, email, password, and role, as well as
+ * auditing fields such as created and updated timestamps.</p>
+ *
+ * <p>Each {@code UserEntity} instance corresponds to a record in the "_user" table.</p>
+ */
 @Entity
 @Table(name = "_user", uniqueConstraints = {
-        @UniqueConstraint(
-                name = "user_username_unique",
-                columnNames = "username"
-        ),
-        @UniqueConstraint(
-                name = "user_email_unique",
-                columnNames = "email"
-        )
+    @UniqueConstraint(name = "user_username_unique", columnNames = "username"),
+    @UniqueConstraint(name = "user_email_unique", columnNames = "email")
 })
 public class UserEntity implements UserDetails {
 
@@ -60,6 +63,15 @@ public class UserEntity implements UserDetails {
     @Column(name = "updated_date", nullable = false)
     private LocalDateTime updatedDate;
 
+    /**
+     * Constructs a new {@code UserEntity} with the specified fields.
+     *
+     * @param id       the user's ID
+     * @param username the user's username
+     * @param email    the user's email
+     * @param password the user's password
+     * @param role     the user's role
+     */
     public UserEntity(
             Integer id,
             String username,

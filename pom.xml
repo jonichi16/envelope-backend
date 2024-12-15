@@ -157,6 +157,7 @@
 						<exclude>**/Main.class</exclude>
 						<exclude>**/*App.class</exclude>
 						<exclude>com/jonichi/envelope/**/constant/**</exclude>
+						<exclude>**/config/**</exclude>
 						<exclude>**/listener/**</exclude>
 					</excludes>
 				</configuration>

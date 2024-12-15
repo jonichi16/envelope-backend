@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -86,42 +85,6 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Handles {@link HttpMessageNotReadableException} by returning a custom error response.
-     *
-     * <p>This method catches the exception when the request body cannot be read or contains an
-     * unrecognized field. If the exception message contains the phrase "Unrecognized field", it
-     * extracts the field name and includes it in the error message indicating that the field is
-     * not allowed.</p>
-     *
-     * @param e the {@link HttpMessageNotReadableException} thrown when the request body is
-     *          unreadable or contains unrecognized fields
-     * @return a {@link ResponseEntity} containing an {@link ApiResponse} with the error details
-     */
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiResponse<Void>> handleHttpMessageNotReadableException(
-            HttpMessageNotReadableException e
-    ) {
-        String errorMessage = e.getMessage();
-        String message = errorMessage;
-
-        if (errorMessage.contains("Unrecognized field")) {
-            int startIdx = errorMessage.indexOf("\"") + 1;
-            int endIdx = errorMessage.indexOf("\"", startIdx);
-            String field = errorMessage.substring(startIdx, endIdx);
-            message = field + " is not allowed";
-        }
-
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        ApiResponse<Void> response = ErrorResponse.<Void>builder()
-                .code(status.value())
-                .message(message)
-                .errorCode(ErrorCode.NOT_ALLOWED)
-                .build();
-
-        return ResponseEntity.status(status).body(response);
-    }
-
-    /**
      * Handles {@link NoResourceFoundException} and maps it to a 404 Not Found response.
      *
      * <p>This method constructs an error response using {@link ErrorResponse} with a specific
@@ -158,7 +121,6 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleAll(Exception e) {
-        System.out.println(e.getMessage());
 
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         ApiResponse<Void> response = ErrorResponse.<Void>builder()

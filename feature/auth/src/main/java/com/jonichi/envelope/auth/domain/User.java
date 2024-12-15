@@ -1,7 +1,5 @@
 package com.jonichi.envelope.auth.domain;
 
-import java.util.Objects;
-
 public class User {
 
     private Integer id = null;

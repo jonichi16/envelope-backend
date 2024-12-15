@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jonichi.envelope.auth.application.port.in.AuthUseCase;
 import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.AuthenticateRequestDTO;
 import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.RegisterRequestDTO;
+import com.jonichi.envelope.common.advice.GlobalExceptionHandler;
 import com.jonichi.envelope.common.exception.EnvelopeDuplicateException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -17,6 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
+@Import(GlobalExceptionHandler.class)
 public class IntegrationTest {
 
     @Autowired
@@ -89,22 +92,6 @@ public class IntegrationTest {
     }
 
     @Test
-    public void register_withInvalidFields_shouldReturn400BadRequestError() throws Exception {
-        // given
-        String invalidRequest = "{ \"username\": \"test\", " +
-                "\"email\": \"test@mail.com\", " +
-                "\"test\": \"sample\", " +
-                "\"password\": \"12345\" }";
-
-        // when, then
-        mockMvc.perform(post("/api/v1/auth/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(invalidRequest))
-                .andExpect(status().isBadRequest());
-    }
-
-
-    @Test
     public void register_withError_shouldReturn500InternalServerError() throws Exception {
         // given
         String username = "test";
@@ -141,20 +128,6 @@ public class IntegrationTest {
     public void authenticate_withMissingFields_shouldReturn400BadRequestError() throws Exception {
         // given
         String invalidRequest = "{ }";
-
-        // when, then
-        mockMvc.perform(post("/api/v1/auth/authenticate")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(invalidRequest))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void authenticate_withInvalidFields_shouldReturn400BadRequestError() throws Exception {
-        // given
-        String invalidRequest = "{ \"username\": \"test\", " +
-                "\"email\": \"invalidEmail\", " +
-                "\"password\": \"12345\" }";
 
         // when, then
         mockMvc.perform(post("/api/v1/auth/authenticate")

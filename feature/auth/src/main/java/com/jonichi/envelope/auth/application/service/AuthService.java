@@ -15,7 +15,12 @@ public class AuthService implements AuthUseCase {
     private final JwtUtilPort jwtUtilPort;
     private final AuthenticationManagerPort authenticationManagerPort;
 
-    public AuthService(UserRepositoryPort userRepositoryPort, PasswordEncoderPort passwordEncoderPort, JwtUtilPort jwtUtilPort, AuthenticationManagerPort authenticationManagerPort) {
+    public AuthService(
+            UserRepositoryPort userRepositoryPort,
+            PasswordEncoderPort passwordEncoderPort,
+            JwtUtilPort jwtUtilPort,
+            AuthenticationManagerPort authenticationManagerPort
+    ) {
         this.userRepositoryPort = userRepositoryPort;
         this.passwordEncoderPort = passwordEncoderPort;
         this.jwtUtilPort = jwtUtilPort;

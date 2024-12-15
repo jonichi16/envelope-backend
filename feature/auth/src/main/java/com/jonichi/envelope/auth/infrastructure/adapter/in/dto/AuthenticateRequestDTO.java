@@ -1,5 +1,6 @@
 package com.jonichi.envelope.auth.infrastructure.adapter.in.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotEmpty;
 
 /**
@@ -11,6 +12,7 @@ import jakarta.validation.constraints.NotEmpty;
  * @param username the username of the user attempting to authenticate
  * @param password the password of the user attempting to authenticate
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record AuthenticateRequestDTO(
 
         @NotEmpty(message = "Username is required")

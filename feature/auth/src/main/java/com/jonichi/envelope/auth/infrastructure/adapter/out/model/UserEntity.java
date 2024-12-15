@@ -1,16 +1,58 @@
 package com.jonichi.envelope.auth.infrastructure.adapter.out.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jonichi.envelope.auth.domain.Role;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+@Entity
+@Table(name = "_user", uniqueConstraints = {
+        @UniqueConstraint(
+                name = "user_username_unique",
+                columnNames = "username"
+        ),
+        @UniqueConstraint(
+                name = "user_email_unique",
+                columnNames = "email"
+        )
+})
 public class UserEntity {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "_user_sequence")
+    @SequenceGenerator(name = "_user_sequence", sequenceName = "_user_sequence", allocationSize = 1)
     private Integer id;
+
+    @Column(nullable = false)
     private String username;
+
+    @Column(nullable = false)
     private String email;
+
+    @JsonIgnore
+    @Column(nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
     private Role role;
+
+    @CreationTimestamp
+    @Column(name = "created_date", nullable = false, updatable = false)
     private LocalDateTime createdDate;
+
+    @UpdateTimestamp
+    @Column(name = "updated_date", nullable = false)
     private LocalDateTime updatedDate;
 
     public UserEntity(

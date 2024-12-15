@@ -160,8 +160,6 @@
 					<excludes>
 						<exclude>**/Main.class</exclude>
 						<exclude>**/*App.class</exclude>
-						<exclude>com/jonichi/envelope/infrastructure/config/**</exclude>
-						<exclude>**/TransactionalHandler.class</exclude>
 						<exclude>com/jonichi/envelope/**/constant/**</exclude>
 						<exclude>**/listener/**</exclude>
 					</excludes>

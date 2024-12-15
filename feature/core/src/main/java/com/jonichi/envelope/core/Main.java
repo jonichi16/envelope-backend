@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
  * Main entry point for the application.
@@ -19,12 +20,15 @@ import org.springframework.context.annotation.ComponentScan;
  *   setup.</li>
  *   <li>{@link ComponentScan} - Specifies the base packages to scan for Spring-managed
  *   components.</li>
+ *   <li>{@link EnableJpaRepositories} - Enables Spring Data JPA repositories in the defined base
+ *  *   packages.</li>
  *   <li>{@link EntityScan} - Configures the scanning of JPA entity classes within the specified
  *   packages.</li>
  * </ul>
  */
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.jonichi.envelope"})
+@EnableJpaRepositories(basePackages = {"com.jonichi.envelope"})
 @EntityScan(basePackages = {"com.jonichi.envelope"})
 public class Main {
 

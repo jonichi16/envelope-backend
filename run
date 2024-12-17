@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# Exit immediately if a command exits with a non-zero status
+set -euf
+
+# Check if an argument is provided
+if [[ $# -eq 0 ]]; then
+    echo "No command provided."
+    echo "Usage: $0 {lint|dev|build}"
+    echo ""
+    echo "Available commands:"
+    echo "  lint  - Run linting checks"
+    echo "  dev   - Run Docker Compose for development (PostgreSQL only)"
+    echo "  build - Run Docker Compose to build and start the app (production setup)"
+    exit 1
+fi
+
+case "$1" in
+    lint)
+        echo "Starting code quality checks..."
+
+        echo "Cleaning..."
+        mvn clean
+
+        echo "Running Checkstyle..."
+        mvn checkstyle:check -ntp
+
+        echo "Running PMD..."
+        mvn pmd:check -ntp
+
+        echo "Running SpotBugs..."
+        mvn spotbugs:check -ntp
+
+        echo "Cleaning..."
+        mvn clean
+
+        echo "Code quality checks completed successfully."
+        ;;
+    dev)
+        echo "Running docker compose with PostgreSQL only..."
+        docker compose -f docker-compose.yml up -d
+        ;;
+    build)
+        echo "Running docker compose with app image..."
+        docker compose -f docker-compose.yml -f docker-compose.build.yml up --build
+        ;;
+    *)
+        echo "Invalid command: '$1'"
+        echo "Usage: $0 {lint|dev|build}"
+        echo ""
+        echo "Available commands:"
+        echo "  lint  - Run linting checks"
+        echo "  dev   - Run Docker Compose for development (PostgreSQL only)"
+        echo "  build - Run Docker Compose to build and start the app (production setup)"
+        exit 1
+        ;;
+esac

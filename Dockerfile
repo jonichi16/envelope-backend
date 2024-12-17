@@ -5,5 +5,5 @@ RUN mvn clean package -ntp -DskipTests
 
 FROM openjdk:21-jdk-slim
 WORKDIR /app
-COPY --from=builder /app/feature/core/target/core-0.0.1-exec.jar app.jar
+COPY --from=builder /app/service/core/target/core-0.0.1-exec.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]

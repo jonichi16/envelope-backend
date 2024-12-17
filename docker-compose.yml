@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres:14-alpine
+    container_name: db
     volumes:
       - $HOME/.apps/postgres:/var/lib/postgresql/data
     environment:
@@ -9,8 +10,14 @@ services:
       - POSTGRES_USER=${DB_USER}
     ports:
       - "5432:5432"
+    networks:
+      - backend
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U root -d envelope_db" ]
       interval: 10s
       timeout: 5s
       retries: 3
+
+networks:
+  backend:
+    name: backend

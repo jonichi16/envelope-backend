@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: envelope:latest
     container_name: api
     depends_on:
       db:

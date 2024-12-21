@@ -35,11 +35,13 @@ public class TransactionalHandler {
      *
      * <p>This method ensures that the code inside the {@link Supplier#get()} is executed within
      * a Spring-managed transaction. The method wraps the execution of the supplier and ensures
-     * that transaction events are registered through {@link TransactionEventListener#registerTransactionEvents()}.
-     * The result of the {@link Supplier#get()} is returned to the caller.</p>
+     * that transaction events are registered through
+     * {@link TransactionEventListener#registerTransactionEvents()}. The result of the
+     * {@link Supplier#get()} is returned to the caller.</p>
      *
-     * <p>The default propagation level is {@link Propagation#REQUIRED}, meaning that if a transaction
-     * already exists, it will be used; otherwise, a new transaction will be created.</p>
+     * <p>The default propagation level is {@link Propagation#REQUIRED}, meaning that if a
+     * transaction already exists, it will be used; otherwise, a new transaction will be
+     * created.</p>
      *
      * @param <T> the type of the result returned by the supplier
      * @param supplier the {@link Supplier} to execute within the transaction

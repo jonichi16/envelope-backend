@@ -12,10 +12,10 @@ import org.springframework.stereotype.Repository;
 /**
  * Implementation of the {@link UserRepositoryPort} interface for managing user data.
  *
- * <p>This class acts as a bridge between the application core and the infrastructure layer,
- * using JPA for data persistence. It leverages a {@link TransactionalHandler} to manage
- * transactional operations and a {@link UserMapper} for converting between domain and
- * persistence models.</p>
+ * <p>This class acts as an adapter in the hexagonal architecture, connecting the application
+ * core to the database through JPA. It utilizes the {@link UserJpaRepository} for database
+ * interactions and the {@link UserMapper} to convert between domain and persistence models.
+ * Transactional operations are handled by the {@link TransactionalHandler}.</p>
  */
 @Repository
 public class UserRepository implements UserRepositoryPort {
@@ -24,10 +24,10 @@ public class UserRepository implements UserRepositoryPort {
     private final TransactionalHandler transactionalHandler;
 
     /**
-     * Constructs a {@link UserRepository} with required dependencies.
+     * Constructs a new {@link UserRepository}.
      *
-     * @param userJpaRepository the JPA repository for direct database interactions
-     * @param transactionalHandler the handler to ensure transactional integrity
+     * @param userJpaRepository the JPA repository for user entities
+     * @param transactionalHandler the transactional handler for managing transactions
      */
     public UserRepository(
             UserJpaRepository userJpaRepository,
@@ -37,15 +37,6 @@ public class UserRepository implements UserRepositoryPort {
         this.transactionalHandler = transactionalHandler;
     }
 
-    /**
-     * Saves a {@link User} entity to the database.
-     *
-     * <p>This method ensures that the save operation runs within a transactional context
-     * provided by the {@link TransactionalHandler}. The {@link User} domain object is
-     * converted to its corresponding persistence model using the {@link UserMapper}.</p>
-     *
-     * @param user the {@link User} entity to save
-     */
     @Override
     public User save(User user) {
         Supplier<UserEntity> supplier = () -> userJpaRepository.save(UserMapper.toUserEntity(user));
@@ -54,16 +45,6 @@ public class UserRepository implements UserRepositoryPort {
         return UserMapper.toUser(userEntity);
     }
 
-    /**
-     * Finds a user by their username.
-     *
-     * <p>This method queries the database for a user with the specified username
-     * and maps the result to a {@link User} domain object using the {@link UserMapper}.
-     * If no user is found, an empty {@link Optional} is returned.</p>
-     *
-     * @param username the username to search for
-     * @return an {@link Optional} containing the {@link User} if found, or empty if not
-     */
     @Override
     public Optional<User> findByUsername(String username) {
         return userJpaRepository.findByUsername(username)

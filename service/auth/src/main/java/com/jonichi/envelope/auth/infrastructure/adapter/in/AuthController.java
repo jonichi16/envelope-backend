@@ -81,8 +81,8 @@ public class AuthController {
      * Endpoint for authenticating a user and generating an authentication accessToken.
      *
      * <p>This method receives a request with the user's username and password, authenticates the
-     * user, and returns a JWT accessToken on successful authentication. The accessToken can then be used for
-     * subsequent requests that require authentication.</p>
+     * user, and returns a JWT accessToken on successful authentication. The accessToken can then
+     * be used for subsequent requests that require authentication.</p>
      *
      * @param authenticateRequestDTO the request data containing the user's username and password
      * @return a {@link ResponseEntity} containing a {@link ApiResponse} with the authentication

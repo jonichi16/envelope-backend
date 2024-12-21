@@ -5,13 +5,15 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 /**
  * A Data Transfer Object (DTO) for representing authentication tokens.
  *
- * <p>The {@code AuthTokenDTO} class encapsulates a accessToken string and is used in authentication
- * responses. It ensures a consistent structure for accessToken-related data.</p>
+ * <p>This DTO encapsulates the details of an authentication response, including the token string
+ * and the user ID associated with the token. It is used to provide a consistent structure for
+ * authentication-related data in API responses.</p>
  *
  * <p>Fields that are {@code null} will be excluded from the JSON serialization due to the
  * {@link JsonInclude} annotation.</p>
  *
- * @param accessToken the authentication accessToken string
+ * @param userId the unique identifier of the user
+ * @param accessToken the authentication token string
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record AuthTokenDTO(

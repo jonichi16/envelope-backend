@@ -3,36 +3,36 @@ package com.jonichi.envelope.auth.application.port.in;
 import com.jonichi.envelope.auth.domain.AuthTokenDTO;
 
 /**
- * Interface representing the use case for user authentication.
- * It defines the methods related to user registration and authentication.
+ * Use case interface for authentication-related operations.
  *
- * <p>The {@code AuthUseCase} interface serves as a contract for authentication services,
- * specifying the methods for registering users and handling their credentials.</p>
+ * <p>This interface defines the contract for user authentication and registration processes.
+ * Implementations of this interface should handle the business logic for user registration
+ * and authentication, returning the appropriate authentication token data.</p>
  */
 public interface AuthUseCase {
 
     /**
-     * Registers a new user and returns an authentication token.
+     * Registers a new user with the provided details.
      *
-     * <p>This method handles the registration process by accepting the user's username,
-     * email, and password. Upon successful registration, it returns a JWT token for the user.</p>
+     * <p>This method creates a new user account with the specified username, email, and password.
+     * Upon successful registration, it generates and returns an authentication token.</p>
      *
-     * @param username the username of the user to register
-     * @param email the email address of the user to register
-     * @param password the password for the user to register
-     * @return a JWT token representing the authenticated user
+     * @param username the desired username for the new user
+     * @param email the email address of the new user
+     * @param password the password for the new user account
+     * @return an {@link AuthTokenDTO} containing the authentication token and user details
      */
     AuthTokenDTO register(String username, String email, String password);
 
     /**
-     * Authenticates an existing user and returns an authentication token.
+     * Authenticates a user with the given credentials.
      *
-     * <p>This method accepts the user's username and password, performs the authentication process,
-     * and returns a JWT token for the user if the credentials are valid.</p>
+     * <p>This method validates the provided username and password against the stored credentials.
+     * If the authentication is successful, it generates and returns an authentication token.</p>
      *
-     * @param username the username of the user to authenticate
-     * @param password the password of the user to authenticate
-     * @return a JWT token representing the authenticated user
+     * @param username the username of the user attempting to authenticate
+     * @param password the password of the user attempting to authenticate
+     * @return an {@link AuthTokenDTO} containing the authentication token and user details
      */
     AuthTokenDTO authenticate(String username, String password);
 }

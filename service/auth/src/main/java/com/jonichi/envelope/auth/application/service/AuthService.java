@@ -6,6 +6,7 @@ import com.jonichi.envelope.auth.application.port.out.util.AuthenticationManager
 import com.jonichi.envelope.auth.application.port.out.util.JwtUtilPort;
 import com.jonichi.envelope.auth.application.port.out.util.PasswordEncoderPort;
 import com.jonichi.envelope.auth.domain.User;
+import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.AuthTokenDTO;
 import com.jonichi.envelope.common.exception.EnvelopeDuplicateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +47,7 @@ public class AuthService implements AuthUseCase {
     }
 
     @Override
-    public String register(String username, String email, String password) {
+    public AuthTokenDTO register(String username, String email, String password) {
         logger.info("Start - Service - register");
 
         if (userRepositoryPort.findByUsername(username).isPresent()) {
@@ -54,11 +55,10 @@ public class AuthService implements AuthUseCase {
         }
 
         String encodedPassword = passwordEncoderPort.encode(password);
-        User user = new User(username, email, encodedPassword);
-        userRepositoryPort.save(user);
+        User user = userRepositoryPort.save(new User(username, email, encodedPassword));
 
         logger.info("End - Service - register");
-        return jwtUtilPort.generateToken(user);
+        return new AuthTokenDTO(user.getId(), jwtUtilPort.generateToken(user));
     }
 
     @Override

@@ -16,7 +16,7 @@ public interface UserRepositoryPort {
      *
      * @param user the {@link User} entity to save
      */
-    void save(User user);
+    User save(User user);
 
     /**
      * Finds a {@link User} entity by its username.

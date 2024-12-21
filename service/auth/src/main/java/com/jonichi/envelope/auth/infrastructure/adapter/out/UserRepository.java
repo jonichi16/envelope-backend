@@ -3,8 +3,10 @@ package com.jonichi.envelope.auth.infrastructure.adapter.out;
 import com.jonichi.envelope.auth.application.port.out.UserRepositoryPort;
 import com.jonichi.envelope.auth.domain.User;
 import com.jonichi.envelope.auth.infrastructure.adapter.out.mapper.UserMapper;
+import com.jonichi.envelope.auth.infrastructure.adapter.out.model.UserEntity;
 import com.jonichi.envelope.common.util.listener.TransactionalHandler;
 import java.util.Optional;
+import java.util.function.Supplier;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -45,11 +47,11 @@ public class UserRepository implements UserRepositoryPort {
      * @param user the {@link User} entity to save
      */
     @Override
-    public void save(User user) {
-        transactionalHandler.runInTransaction(() ->
-                userJpaRepository.save(UserMapper.toUserEntity(user))
-        );
+    public User save(User user) {
+        Supplier<UserEntity> supplier = () -> userJpaRepository.save(UserMapper.toUserEntity(user));
+        UserEntity userEntity = transactionalHandler.runInTransactionSupplier(supplier);
 
+        return UserMapper.toUser(userEntity);
     }
 
     /**

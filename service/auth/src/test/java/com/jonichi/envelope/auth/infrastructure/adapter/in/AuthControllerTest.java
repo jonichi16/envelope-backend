@@ -94,14 +94,16 @@ public class AuthControllerTest {
         String password = "secret";
 
         AuthenticateRequestDTO authenticateRequestDTO = new AuthenticateRequestDTO(username, password);
+        AuthTokenDTO authTokenDTO = new AuthTokenDTO(1, "encodedToken");
 
         // when
-        when(authUseCase.authenticate(username, password)).thenReturn("encodedToken");
+        when(authUseCase.authenticate(username, password)).thenReturn(authTokenDTO);
         ResponseEntity<ApiResponse<AuthTokenDTO>> response = authController.authenticate(authenticateRequestDTO);
 
         // then
         assertThat(response.getStatusCode().value()).isEqualTo(200);
         assertThat(Objects.requireNonNull(response.getBody()).getData().token()).isEqualTo("encodedToken");
+        assertThat(Objects.requireNonNull(response.getBody()).getData().userId()).isEqualTo(1);
         assertThat(response.getBody().getMessage()).isEqualTo("User authenticated successfully");
         assertThat(response.getBody().getCode()).isEqualTo(200);
 

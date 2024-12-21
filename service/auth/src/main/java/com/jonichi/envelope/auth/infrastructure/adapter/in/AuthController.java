@@ -99,12 +99,10 @@ public class AuthController {
                 "******"
         );
 
-        String token = authUseCase.authenticate(
+        AuthTokenDTO authTokenDTO = authUseCase.authenticate(
                 authenticateRequestDTO.username(),
                 authenticateRequestDTO.password()
         );
-
-        AuthTokenDTO authTokenDTO = new AuthTokenDTO(1, token);
 
         HttpStatus status = HttpStatus.OK;
         ApiResponse<AuthTokenDTO> response = SuccessResponse.<AuthTokenDTO>builder()

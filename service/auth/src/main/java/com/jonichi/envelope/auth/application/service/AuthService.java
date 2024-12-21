@@ -62,7 +62,7 @@ public class AuthService implements AuthUseCase {
     }
 
     @Override
-    public String authenticate(String username, String password) {
+    public AuthTokenDTO authenticate(String username, String password) {
         logger.info("Start - Service - authenticate");
 
         authenticationManagerPort.authenticate(username, password);
@@ -70,6 +70,6 @@ public class AuthService implements AuthUseCase {
         User user = userRepositoryPort.findByUsername(username).orElseThrow();
 
         logger.info("End - Service - authenticate");
-        return jwtUtilPort.generateToken(user);
+        return new AuthTokenDTO(user.getId(), jwtUtilPort.generateToken(user));
     }
 }

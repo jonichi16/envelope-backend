@@ -1,7 +1,7 @@
 package com.jonichi.envelope.auth.infrastructure.adapter.in;
 
 import com.jonichi.envelope.auth.application.port.in.AuthUseCase;
-import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.AuthTokenDTO;
+import com.jonichi.envelope.auth.domain.AuthTokenDTO;
 import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.AuthenticateRequestDTO;
 import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.RegisterRequestDTO;
 import com.jonichi.envelope.common.dto.ApiResponse;
@@ -62,7 +62,7 @@ public class AuthControllerTest {
 
         // then
         assertThat(response.getStatusCode().value()).isEqualTo(201);
-        assertThat(Objects.requireNonNull(response.getBody()).getData().token()).isEqualTo("encodedToken");
+        assertThat(Objects.requireNonNull(response.getBody()).getData().accessToken()).isEqualTo("encodedToken");
         assertThat(Objects.requireNonNull(response.getBody()).getData().userId()).isEqualTo(1);
         assertThat(response.getBody().getMessage()).isEqualTo("User registered successfully");
         assertThat(response.getBody().getCode()).isEqualTo(201);
@@ -102,7 +102,7 @@ public class AuthControllerTest {
 
         // then
         assertThat(response.getStatusCode().value()).isEqualTo(200);
-        assertThat(Objects.requireNonNull(response.getBody()).getData().token()).isEqualTo("encodedToken");
+        assertThat(Objects.requireNonNull(response.getBody()).getData().accessToken()).isEqualTo("encodedToken");
         assertThat(Objects.requireNonNull(response.getBody()).getData().userId()).isEqualTo(1);
         assertThat(response.getBody().getMessage()).isEqualTo("User authenticated successfully");
         assertThat(response.getBody().getCode()).isEqualTo(200);

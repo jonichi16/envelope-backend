@@ -6,7 +6,7 @@ import com.jonichi.envelope.auth.application.port.out.util.JwtUtilPort;
 import com.jonichi.envelope.auth.application.port.out.util.PasswordEncoderPort;
 import com.jonichi.envelope.auth.domain.Role;
 import com.jonichi.envelope.auth.domain.User;
-import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.AuthTokenDTO;
+import com.jonichi.envelope.auth.domain.AuthTokenDTO;
 import com.jonichi.envelope.common.exception.EnvelopeDuplicateException;
 import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -54,7 +54,7 @@ public class AuthServiceTest {
         // then
         verify(passwordEncoderPort, times(1)).encode(password);
         verify(jwtUtilPort, times(1)).generateToken(user);
-        assertThat(authTokenDTO.token()).isEqualTo("jwtToken");
+        assertThat(authTokenDTO.accessToken()).isEqualTo("jwtToken");
         assertThat(authTokenDTO.userId()).isEqualTo(2);
     }
 

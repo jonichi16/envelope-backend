@@ -1,7 +1,7 @@
 package com.jonichi.envelope.auth.infrastructure.adapter.in;
 
 import com.jonichi.envelope.auth.application.port.in.AuthUseCase;
-import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.AuthTokenDTO;
+import com.jonichi.envelope.auth.domain.AuthTokenDTO;
 import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.AuthenticateRequestDTO;
 import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.RegisterRequestDTO;
 import com.jonichi.envelope.common.dto.ApiResponse;
@@ -37,16 +37,16 @@ public class AuthController {
     }
 
     /**
-     * Registers a new user and returns an authentication token.
+     * Registers a new user and returns an authentication accessToken.
      *
      * <p>This endpoint accepts a {@link RegisterRequestDTO} containing the user's
      * registration details (username, email, and password). It delegates the registration
-     * process to the {@link AuthUseCase} and returns an authentication token on success.</p>
+     * process to the {@link AuthUseCase} and returns an authentication accessToken on success.</p>
      *
      * @param registerRequestDTO the registration request data containing username, email, and
      *     password
      * @return a {@link ResponseEntity} containing a {@link ApiResponse} with an authentication
-     *     token
+     *     accessToken
      */
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<AuthTokenDTO>> register(
@@ -78,15 +78,15 @@ public class AuthController {
     }
 
     /**
-     * Endpoint for authenticating a user and generating an authentication token.
+     * Endpoint for authenticating a user and generating an authentication accessToken.
      *
      * <p>This method receives a request with the user's username and password, authenticates the
-     * user, and returns a JWT token on successful authentication. The token can then be used for
+     * user, and returns a JWT accessToken on successful authentication. The accessToken can then be used for
      * subsequent requests that require authentication.</p>
      *
      * @param authenticateRequestDTO the request data containing the user's username and password
      * @return a {@link ResponseEntity} containing a {@link ApiResponse} with the authentication
-     *     token
+     *     accessToken
      */
     @PostMapping("/authenticate")
     public ResponseEntity<ApiResponse<AuthTokenDTO>> authenticate(

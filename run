@@ -57,7 +57,7 @@ case "$1" in
         ;;
     logs)
         echo "Tailing logs for the 'app' service..."
-        docker logs -f app
+        docker logs -f api
         ;;
     stop)
         echo "Stopping all services and cleaning up..."

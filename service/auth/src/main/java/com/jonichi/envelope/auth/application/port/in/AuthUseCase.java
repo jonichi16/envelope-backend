@@ -1,6 +1,6 @@
 package com.jonichi.envelope.auth.application.port.in;
 
-import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.AuthTokenDTO;
+import com.jonichi.envelope.auth.domain.AuthTokenDTO;
 
 /**
  * Interface representing the use case for user authentication.

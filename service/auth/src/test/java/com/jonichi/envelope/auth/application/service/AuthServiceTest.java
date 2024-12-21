@@ -126,14 +126,15 @@ public class AuthServiceTest {
         String email = "test@mail.com";
         String password = "secret";
 
-        User user = new User(username, email, password);
+        User user = new User(2, username, email, password, Role.USER);
 
         // when
         when(userRepositoryPort.findByUsername(username)).thenReturn(Optional.of(user));
         when(jwtUtilPort.generateToken(user)).thenReturn("encodedToken");
+        AuthTokenDTO authTokenDTO = new AuthTokenDTO(2, "encodedToken");
 
         // then
-        assertThat(authService.authenticate(username, password)).isEqualTo("encodedToken");
+        assertThat(authService.authenticate(username, password)).isEqualTo(authTokenDTO);
         verify(authenticationManagerPort, times(1)).authenticate(username, password);
     }
 

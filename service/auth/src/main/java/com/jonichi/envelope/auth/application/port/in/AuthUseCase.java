@@ -34,5 +34,5 @@ public interface AuthUseCase {
      * @param password the password of the user to authenticate
      * @return a JWT token representing the authenticated user
      */
-    String authenticate(String username, String password);
+    AuthTokenDTO authenticate(String username, String password);
 }

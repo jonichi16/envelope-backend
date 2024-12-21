@@ -6,13 +6,13 @@ import com.jonichi.envelope.auth.infrastructure.adapter.out.mapper.UserMapper;
 import com.jonichi.envelope.auth.infrastructure.adapter.out.model.UserEntity;
 import com.jonichi.envelope.common.util.listener.TransactionalHandler;
 import java.util.Optional;
+import java.util.function.Supplier;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,15 +29,20 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     @Test
-    public void save_shouldBeInTransactional() throws Exception {
+    public void save_shouldBeInTransactionalSupplierAndReturnUser() throws Exception {
         // given
         User user = new User("test", "test@mail.com", "secret");
 
+        UserEntity userEntity = new UserEntity(1, "test", "test@mail.com", "secret", Role.USER);
+
         // when
-        userRepository.save(user);
+        when(transactionalHandler.runInTransactionSupplier(any(Supplier.class))).thenReturn(userEntity);
+        User createdUser = userRepository.save(user);
 
         // then
-        verify(transactionalHandler, times(1)).runInTransaction(any(Runnable.class));
+        verify(transactionalHandler, times(1)).runInTransactionSupplier(any(Supplier.class));
+        assertThat(createdUser.getId()).isEqualTo(1);
+        assertThat(createdUser.getUsername()).isEqualTo("test");
     }
 
     @Test
@@ -46,17 +51,17 @@ public class UserRepositoryTest {
         User user = new User("test", "test@mail.com", "secret");
 
         // when
-        doAnswer(invocation -> {
-            Runnable action = invocation.getArgument(0);
-            action.run();
-            return null;
-        }).when(transactionalHandler).runInTransaction(any(Runnable.class));
-
+        UserEntity mockUserEntity = new UserEntity(1, "test", "test@mail.com", "secret", Role.USER);
+        when(transactionalHandler.runInTransactionSupplier(any(Supplier.class)))
+                .thenAnswer(invocation -> {
+                    Supplier<UserEntity> supplier = invocation.getArgument(0);
+                    return supplier.get();
+                });
+        when(userJpaRepository.save(any(UserEntity.class))).thenReturn(mockUserEntity);
         userRepository.save(user);
-        UserEntity userEntity = UserMapper.toUserEntity(user);
 
         // then
-        verify(userJpaRepository, times(1)).save(userEntity);
+        verify(userJpaRepository, times(1)).save(any(UserEntity.class));
     }
 
     @Test

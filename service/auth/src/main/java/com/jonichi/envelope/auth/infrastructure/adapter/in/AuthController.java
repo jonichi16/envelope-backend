@@ -60,13 +60,11 @@ public class AuthController {
                 "******"
         );
 
-        String token = authUseCase.register(
+        AuthTokenDTO authTokenDTO = authUseCase.register(
                 registerRequestDTO.username(),
                 registerRequestDTO.email(),
                 registerRequestDTO.password()
         );
-
-        AuthTokenDTO authTokenDTO = new AuthTokenDTO(token);
 
         HttpStatus status = HttpStatus.CREATED;
         ApiResponse<AuthTokenDTO> response = SuccessResponse.<AuthTokenDTO>builder()
@@ -106,7 +104,7 @@ public class AuthController {
                 authenticateRequestDTO.password()
         );
 
-        AuthTokenDTO authTokenDTO = new AuthTokenDTO(token);
+        AuthTokenDTO authTokenDTO = new AuthTokenDTO(1, token);
 
         HttpStatus status = HttpStatus.OK;
         ApiResponse<AuthTokenDTO> response = SuccessResponse.<AuthTokenDTO>builder()

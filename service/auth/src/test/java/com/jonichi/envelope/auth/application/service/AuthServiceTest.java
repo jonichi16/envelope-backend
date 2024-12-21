@@ -4,7 +4,9 @@ import com.jonichi.envelope.auth.application.port.out.UserRepositoryPort;
 import com.jonichi.envelope.auth.application.port.out.util.AuthenticationManagerPort;
 import com.jonichi.envelope.auth.application.port.out.util.JwtUtilPort;
 import com.jonichi.envelope.auth.application.port.out.util.PasswordEncoderPort;
+import com.jonichi.envelope.auth.domain.Role;
 import com.jonichi.envelope.auth.domain.User;
+import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.AuthTokenDTO;
 import com.jonichi.envelope.common.exception.EnvelopeDuplicateException;
 import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -44,14 +46,16 @@ public class AuthServiceTest {
         User user = new User(username, email, encodedPassword);
 
         // when
+        when(userRepositoryPort.save(user)).thenReturn(new User(2, username, email, encodedPassword, Role.USER));
         when(passwordEncoderPort.encode(password)).thenReturn(encodedPassword);
         when(jwtUtilPort.generateToken(user)).thenReturn("jwtToken");
-        String token = authService.register(username, email, password);
+        AuthTokenDTO authTokenDTO = authService.register(username, email, password);
 
         // then
         verify(passwordEncoderPort, times(1)).encode(password);
         verify(jwtUtilPort, times(1)).generateToken(user);
-        assertThat(token).isEqualTo("jwtToken");
+        assertThat(authTokenDTO.token()).isEqualTo("jwtToken");
+        assertThat(authTokenDTO.userId()).isEqualTo(2);
     }
 
     @Test
@@ -60,8 +64,15 @@ public class AuthServiceTest {
         String username = "test";
         String email = "test@mail.com";
         String password = "secret";
+        String encodedPassword = "encodedPassword";
 
-        // when, then
+        // when
+        when(userRepositoryPort.save(new User(username, email, encodedPassword))).thenReturn(
+                new User(1, username, email, encodedPassword, Role.USER)
+        );
+        when(passwordEncoderPort.encode(password)).thenReturn(encodedPassword);
+
+        // then
         assertThatNoException().isThrownBy(() ->
                 authService.register(username, email, password));
         verify(userRepositoryPort, times(1)).findByUsername(username);
@@ -97,6 +108,9 @@ public class AuthServiceTest {
 
         // when
         when(passwordEncoderPort.encode(password)).thenReturn(encodedPassword);
+        when(userRepositoryPort.save(new User(username, email, encodedPassword))).thenReturn(
+                new User(1, username, email, encodedPassword, Role.USER)
+        );
         authService.register(username, email, password);
 
         // then

@@ -1,5 +1,7 @@
 package com.jonichi.envelope.auth.application.port.in;
 
+import com.jonichi.envelope.auth.infrastructure.adapter.in.dto.AuthTokenDTO;
+
 /**
  * Interface representing the use case for user authentication.
  * It defines the methods related to user registration and authentication.
@@ -20,7 +22,7 @@ public interface AuthUseCase {
      * @param password the password for the user to register
      * @return a JWT token representing the authenticated user
      */
-    String register(String username, String email, String password);
+    AuthTokenDTO register(String username, String email, String password);
 
     /**
      * Authenticates an existing user and returns an authentication token.

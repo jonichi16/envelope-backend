@@ -2,6 +2,7 @@ package com.jonichi.envelope.auth.config;
 
 import com.jonichi.envelope.auth.application.port.in.AuthUseCase;
 import com.jonichi.envelope.auth.application.port.out.UserRepositoryPort;
+import com.jonichi.envelope.auth.application.port.out.UserUtil;
 import com.jonichi.envelope.auth.application.port.out.util.AuthenticationManagerPort;
 import com.jonichi.envelope.auth.application.port.out.util.JwtUtilPort;
 import com.jonichi.envelope.auth.application.port.out.util.PasswordEncoderPort;
@@ -10,6 +11,7 @@ import com.jonichi.envelope.auth.infrastructure.adapter.out.AuthenticationManage
 import com.jonichi.envelope.auth.infrastructure.adapter.out.PasswordEncoderImpl;
 import com.jonichi.envelope.auth.infrastructure.adapter.out.UserJpaRepository;
 import com.jonichi.envelope.auth.infrastructure.adapter.out.UserRepository;
+import com.jonichi.envelope.auth.infrastructure.adapter.out.UserUtilImpl;
 import com.jonichi.envelope.common.util.listener.TransactionalHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -110,6 +112,18 @@ public class AppConfig {
                 passwordEncoderPort(),
                 jwtUtilPort(),
                 authenticationManagerPort()
+        );
+    }
+
+    /**
+     * Creates a new instance of {@link UserUtilImpl} using the provided {@link UserRepository}.
+     *
+     * @return the {@link UserUtil} implementation for fetching user details
+     */
+    @Bean
+    public UserUtil userUtil() {
+        return new UserUtilImpl(
+                new UserRepository(userJpaRepository, transactionalHandler)
         );
     }
 }
